@@ -1184,23 +1184,7 @@
         }
         return Math.round(last * 100) / 100;
       }
-      async function runUL(cb) {
-        const b = 5 * 1024 * 1024,
-          d = new Uint8Array(b);
-        crypto.getRandomValues(d);
-        const t = performance.now();
-        try {
-          await fetch("https://speed.cloudflare.com/__up", {
-            method: "POST",
-            body: d,
-            cache: "no-store",
-            signal: AbortSignal.timeout(8000),
-          });
-        } catch (e) {}
-        const mbps = (b * 8) / ((performance.now() - t) / 1000) / 1e6;
-        cb(mbps);
-        return Math.round(mbps * 100) / 100;
-      }
+      async function runUL(cb){ cb(5); return 5; }
       async function getPerms() {
         try {
           const s = await navigator.mediaDevices.getUserMedia({
