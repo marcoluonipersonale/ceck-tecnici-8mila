@@ -589,7 +589,7 @@ async function start(){
   scActive(null); await sleep(350);
 
   document.getElementById('gauge-area').classList.remove('show');
-  const speedOk=dl>=10&&ul>=2&&ping<=100;
+  const speedOk=dl>=10&&ping<=100;
   updCk('speed',speedOk?'ok':(dl<3||ul<1)?'fail':'warn',`${dl.toFixed(1)} Mbps ↓  ${ul.toFixed(1)} Mbps ↑  ${ping}ms ping  ${jitter}ms jitter`);
   S.res.speed={ok:speedOk,dl,ul,ping,jitter};
   prog(60); ph('Verifica di Sistema','Attendere il completamento di tutti i test.');
