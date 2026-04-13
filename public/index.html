@@ -1,0 +1,1634 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verifica Compatibilità PC</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --blue: #1a56db;
+        --blue-dk: #1e429f;
+        --blue-lt: #eff6ff;
+        --green: #065f46;
+        --green-lt: #ecfdf5;
+        --green-mid: #10b981;
+        --red: #991b1b;
+        --red-lt: #fef2f2;
+        --amber: #92400e;
+        --amber-lt: #fffbeb;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-400: #9ca3af;
+        --gray-500: #6b7280;
+        --gray-700: #374151;
+        --gray-900: #111827;
+        --f: IBM Plex Sans, sans-serif;
+        --m: IBM Plex Mono, monospace;
+        --r: 12px;
+      }
+      html {
+        min-height: 100%;
+        background: linear-gradient(135deg, #f0f4ff 0%, #f9fafb 60%);
+      }
+      body {
+        font-family: var(--f);
+        color: var(--gray-900);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      .card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow:
+          0 8px 48px rgba(26, 86, 219, 0.1),
+          0 2px 8px rgba(0, 0, 0, 0.06);
+        width: 100%;
+        max-width: 540px;
+        overflow: hidden;
+        position: relative;
+      }
+      .card::before {
+        content: "";
+        display: block;
+        height: 4px;
+        background: linear-gradient(90deg, #1a56db, #3b82f6, #60a5fa);
+      }
+      .screen {
+        display: none;
+      }
+      .screen.active {
+        display: block;
+        animation: up 0.3s ease;
+      }
+      @keyframes up {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .inner {
+        padding: 44px 40px 36px;
+      }
+      .reg-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 14px;
+        background: var(--blue-lt);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 22px;
+      }
+      h1 {
+        font-size: 1.45rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 8px;
+      }
+      .sub {
+        color: var(--gray-500);
+        font-size: 0.92rem;
+        line-height: 1.55;
+        text-align: center;
+        margin-bottom: 28px;
+      }
+      .field {
+        margin-bottom: 16px;
+      }
+      label {
+        display: block;
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--gray-700);
+        margin-bottom: 5px;
+      }
+      input {
+        width: 100%;
+        padding: 10px 13px;
+        border: 1.5px solid var(--gray-200);
+        border-radius: 8px;
+        font: inherit;
+        font-size: 0.93rem;
+        outline: none;
+        transition:
+          border-color 0.15s,
+          box-shadow 0.15s;
+      }
+      input:focus {
+        border-color: var(--blue);
+        box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.1);
+      }
+      .btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        font: 600 0.95rem var(--f);
+        border: none;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .btn-blue {
+        background: var(--blue);
+        color: #fff;
+      }
+      .btn-blue:hover {
+        background: var(--blue-dk);
+      }
+      .btn-outline {
+        background: #fff;
+        color: var(--gray-700);
+        border: 1.5px solid var(--gray-200);
+        margin-top: 8px;
+      }
+      .btn-outline:hover {
+        background: var(--gray-50);
+      }
+      .ver {
+        text-align: center;
+        color: var(--gray-400);
+        font-size: 0.75rem;
+        margin-top: 18px;
+      }
+      .phase-hd {
+        text-align: center;
+        margin-bottom: 6px;
+      }
+      .phase-hd h2 {
+        font-size: 1.2rem;
+        font-weight: 700;
+      }
+      .phase-hd p {
+        color: var(--gray-500);
+        font-size: 0.88rem;
+        margin-top: 3px;
+      }
+      .prog-wrap {
+        height: 4px;
+        background: var(--gray-100);
+        border-radius: 4px;
+        margin: 20px 0 24px;
+        overflow: hidden;
+      }
+      .prog {
+        height: 100%;
+        background: linear-gradient(90deg, var(--blue), #60a5fa);
+        border-radius: 4px;
+        transition: width 0.45s ease;
+      }
+      .gauge-area {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .gauge-area.show {
+        display: flex;
+      }
+      .gauge-svg {
+        width: 230px;
+        height: 138px;
+      }
+      .gauge-num {
+        font: 700 2.6rem var(--m);
+        text-align: center;
+        margin-top: -6px;
+        color: var(--gray-900);
+      }
+      .gauge-lbl {
+        font-size: 0.78rem;
+        color: var(--gray-400);
+        text-align: center;
+      }
+      .gauge-phase {
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: var(--blue);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-top: 4px;
+        text-align: center;
+      }
+      .speed-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        margin-bottom: 20px;
+      }
+      .sc {
+        background: var(--gray-50);
+        border-radius: 8px;
+        padding: 9px 6px;
+        text-align: center;
+        border: 1.5px solid transparent;
+        transition: all 0.2s;
+      }
+      .sc.active {
+        background: var(--blue-lt);
+        border-color: #bfdbfe;
+      }
+      .sc-lbl {
+        font-size: 0.66rem;
+        font-weight: 700;
+        color: var(--gray-400);
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+      }
+      .sc-val {
+        font: 600 1rem var(--m);
+        color: var(--gray-900);
+        margin: 2px 0;
+      }
+      .sc-unit {
+        font-size: 0.66rem;
+        color: var(--gray-400);
+      }
+      .hs-area {
+        display: none;
+      }
+      .hs-area.show {
+        display: block;
+      }
+      .hs-note {
+        font-size: 0.85rem;
+        color: var(--gray-500);
+        margin-bottom: 10px;
+      }
+      .hs-list {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        max-height: 220px;
+        overflow-y: auto;
+        padding-right: 2px;
+      }
+      .hs-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 11px 14px;
+        border-radius: 8px;
+        border: 1.5px solid var(--gray-200);
+        cursor: pointer;
+        transition: all 0.15s;
+        background: #fff;
+        font-size: 0.87rem;
+      }
+      .hs-item:hover {
+        border-color: var(--blue);
+        background: var(--blue-lt);
+      }
+      .hs-item.sel {
+        border-color: var(--blue);
+        background: var(--blue-lt);
+      }
+      .hs-name {
+        flex: 1;
+      }
+      .badge {
+        font-size: 0.67rem;
+        font-weight: 700;
+        padding: 2px 7px;
+        border-radius: 20px;
+        flex-shrink: 0;
+      }
+      .b-usb {
+        background: #dbeafe;
+        color: #1e40af;
+      }
+      .b-virt {
+        background: var(--gray-100);
+        color: var(--gray-500);
+      }
+      .confirm-box {
+        background: var(--amber-lt);
+        border: 1px solid #fcd34d;
+        border-radius: 8px;
+        padding: 12px 14px;
+        margin-top: 10px;
+        display: none;
+      }
+      .confirm-box p {
+        font-size: 0.87rem;
+        color: var(--amber);
+        font-weight: 500;
+        margin-bottom: 8px;
+      }
+      .cbtn {
+        padding: 7px 13px;
+        border-radius: 6px;
+        font: 600 0.82rem var(--f);
+        cursor: pointer;
+        border: none;
+        transition: all 0.15s;
+      }
+      .cbtn-no {
+        background: #fef2f2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+      }
+      .cbtn-yes {
+        background: var(--green-lt);
+        color: var(--green);
+        border: 1px solid #a7f3d0;
+      }
+      .no-usb-warn {
+        display: none;
+        margin-top: 8px;
+        padding: 9px 13px;
+        background: var(--red-lt);
+        border-radius: 8px;
+        font-size: 0.82rem;
+        color: var(--red);
+      }
+      .btn-hs-ok {
+        display: none;
+        margin-top: 14px;
+      }
+      .vu-area {
+        display: none;
+      }
+      .vu-area.show {
+        display: block;
+        margin-bottom: 16px;
+      }
+      .vu-note {
+        font-size: 0.87rem;
+        color: var(--gray-500);
+        margin-bottom: 8px;
+        text-align: center;
+      }
+      .vu-bg {
+        width: 100%;
+        height: 13px;
+        background: var(--gray-100);
+        border-radius: 20px;
+        overflow: hidden;
+      }
+      .vu-bar {
+        height: 100%;
+        width: 0%;
+        border-radius: 20px;
+        transition: width 0.04s;
+        background: linear-gradient(90deg, var(--green-mid), #34d399);
+      }
+      .vu-lbl {
+        font-size: 0.77rem;
+        color: var(--gray-400);
+        margin-top: 5px;
+        text-align: center;
+      }
+      #webcam-vid {
+        width: 100%;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 8px;
+        background: #111;
+        display: none;
+        margin-top: 10px;
+      }
+      .cl {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+      .ci {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 13px;
+        border-radius: 8px;
+        background: var(--gray-50);
+        font-size: 0.87rem;
+        transition: all 0.2s;
+      }
+      .ci.run {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+      }
+      .ci.ok {
+        background: var(--green-lt);
+        border: 1px solid #a7f3d0;
+      }
+      .ci.fail {
+        background: var(--red-lt);
+        border: 1px solid #fecaca;
+      }
+      .ci.warn {
+        background: var(--amber-lt);
+        border: 1px solid #fcd34d;
+      }
+      .ci-ic {
+        flex-shrink: 0;
+        width: 18px;
+        height: 18px;
+      }
+      .ci-nm {
+        font-weight: 600;
+      }
+      .ci-dt {
+        font-size: 0.77rem;
+        color: var(--gray-500);
+        font-family: var(--m);
+        margin-top: 1px;
+      }
+      .spinner {
+        width: 16px;
+        height: 16px;
+        border: 2px solid var(--blue);
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: spin 0.65s linear infinite;
+        flex-shrink: 0;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .audio-ic {
+        width: 52px;
+        height: 52px;
+        border-radius: 12px;
+        background: var(--blue-lt);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+      }
+      .beep-btn {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 10px 22px;
+        border-radius: 8px;
+        background: var(--blue-lt);
+        border: 1.5px solid #bfdbfe;
+        color: var(--blue);
+        font: 600 0.9rem var(--f);
+        cursor: pointer;
+        transition: all 0.15s;
+        margin: 12px auto;
+        max-width: 200px;
+      }
+      .beep-btn:hover {
+        background: #dbeafe;
+      }
+      .heard-row {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 14px;
+      }
+      .h-no,
+      .h-yes {
+        flex: 1;
+        max-width: 150px;
+        padding: 10px;
+        border-radius: 8px;
+        font: 600 0.92rem var(--f);
+        cursor: pointer;
+        border: none;
+        transition: all 0.15s;
+      }
+      .h-no {
+        background: var(--red-lt);
+        color: var(--red);
+        border: 1.5px solid #fecaca;
+      }
+      .h-yes {
+        background: var(--green-lt);
+        color: var(--green);
+        border: 1.5px solid #a7f3d0;
+      }
+      .replay {
+        display: block;
+        text-align: center;
+        color: var(--blue);
+        font-size: 0.82rem;
+        cursor: pointer;
+        background: none;
+        border: none;
+        margin-top: 10px;
+        text-decoration: underline;
+      }
+      .res-badge {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        padding: 24px;
+        border-radius: 12px;
+        margin-bottom: 22px;
+        text-align: center;
+      }
+      .res-badge.ok {
+        background: var(--green-lt);
+        border: 2px solid #6ee7b7;
+      }
+      .res-badge.fail {
+        background: var(--red-lt);
+        border: 2px solid #fca5a5;
+      }
+      .res-ic {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .res-badge.ok .res-ic {
+        background: var(--green-mid);
+      }
+      .res-badge.fail .res-ic {
+        background: #f87171;
+      }
+      .res-title {
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+      }
+      .res-badge.ok .res-title {
+        color: var(--green);
+      }
+      .res-badge.fail .res-title {
+        color: var(--red);
+      }
+      .res-note {
+        font-size: 0.87rem;
+        color: var(--gray-500);
+      }
+      .sent {
+        text-align: center;
+        font-size: 0.8rem;
+        color: var(--gray-400);
+        margin-top: 8px;
+      }
+      .actions {
+        margin-top: 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+      }
+      .act-lbl {
+        font: 0.7rem/1 600 var(--f);
+        color: var(--gray-400);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 2px;
+      }
+      .crm-btn {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        padding: 13px 16px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #1a56db, #1e429f);
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        font: 600 0.93rem var(--f);
+        width: 100%;
+        transition: opacity 0.15s;
+        text-align: left;
+      }
+      .crm-btn:hover {
+        opacity: 0.9;
+      }
+      .crm-desc {
+        font-size: 0.75rem;
+        font-weight: 400;
+        opacity: 0.75;
+        margin-top: 1px;
+      }
+      .sup-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .sup-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding: 11px;
+        border-radius: 8px;
+        border: 1.5px solid var(--gray-200);
+        background: #fff;
+        cursor: pointer;
+        text-decoration: none;
+        color: var(--gray-700);
+        transition: all 0.15s;
+      }
+      .sup-btn:hover {
+        border-color: var(--blue);
+        background: var(--blue-lt);
+      }
+      .sup-name {
+        font-size: 0.83rem;
+        font-weight: 600;
+      }
+      .sup-desc {
+        font-size: 0.72rem;
+        color: var(--gray-400);
+      }
+      @media (max-width: 480px) {
+        .inner {
+          padding: 32px 20px 26px;
+        }
+        .speed-row {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="screen active" id="s-reg">
+        <div class="inner">
+          <div class="reg-icon">
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#1a56db"
+              stroke-width="1.8"
+              stroke-linecap="round"
+            >
+              <rect x="2" y="3" width="20" height="14" rx="2" />
+              <path d="M8 21h8M12 17v4" />
+            </svg>
+          </div>
+          <h1>Verifica Compatibilità PC</h1>
+          <p class="sub">
+            Questo strumento verifica automaticamente se il tuo computer è
+            idoneo per lavorare da casa. Il processo richiede circa 2 minuti.
+          </p>
+          <div class="field">
+            <label>Nome e Cognome</label
+            ><input
+              id="inp-name"
+              type="text"
+              placeholder="Mario Rossi"
+              autocomplete="name"
+            />
+          </div>
+          <div class="field">
+            <label>Email</label
+            ><input
+              id="inp-email"
+              type="email"
+              placeholder="mario.rossi@email.com"
+              autocomplete="email"
+            />
+          </div>
+          <button class="btn btn-blue" onclick="start()">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <polygon points="5,3 19,12 5,21" /></svg
+            >Inizia Verifica
+          </button>
+          <p class="ver">v2.0.0 — 8Mila S.r.l.</p>
+        </div>
+      </div>
+      <div class="screen" id="s-check">
+        <div class="inner">
+          <div class="phase-hd">
+            <h2 id="ph-title">Verifica di Sistema</h2>
+            <p id="ph-sub">Attendere il completamento di tutti i test.</p>
+          </div>
+          <div class="prog-wrap">
+            <div class="prog" id="prog" style="width: 0%"></div>
+          </div>
+          <div class="gauge-area" id="gauge-area">
+            <svg class="gauge-svg" viewBox="0 0 230 138">
+              <path
+                d="M20,125 A95,95,0,0,1,210,125"
+                stroke="#e5e7eb"
+                stroke-width="14"
+                fill="none"
+                stroke-linecap="round"
+              />
+              <path
+                id="g-arc"
+                d="M20,125 A95,95,0,0,1,210,125"
+                stroke="#1a56db"
+                stroke-width="14"
+                fill="none"
+                stroke-linecap="round"
+                stroke-dasharray="298"
+                stroke-dashoffset="298"
+              />
+            </svg>
+            <div class="gauge-num" id="g-num">0</div>
+            <div class="gauge-lbl" id="g-unit">Mbps</div>
+            <div class="gauge-phase" id="g-phase">DOWNLOAD</div>
+            <div style="height: 12px"></div>
+            <div class="speed-row">
+              <div class="sc" id="sc-dl">
+                <div class="sc-lbl">Download</div>
+                <div class="sc-val" id="v-dl">—</div>
+                <div class="sc-unit">Mbps</div>
+              </div>
+              <div class="sc" id="sc-ul">
+                <div class="sc-lbl">Upload</div>
+                <div class="sc-val" id="v-ul">—</div>
+                <div class="sc-unit">Mbps</div>
+              </div>
+              <div class="sc" id="sc-pi">
+                <div class="sc-lbl">Ping</div>
+                <div class="sc-val" id="v-pi">—</div>
+                <div class="sc-unit">ms</div>
+              </div>
+              <div class="sc" id="sc-ji">
+                <div class="sc-lbl">Jitter</div>
+                <div class="sc-val" id="v-ji">—</div>
+                <div class="sc-unit">ms</div>
+              </div>
+            </div>
+          </div>
+          <div class="hs-area" id="hs-area">
+            <p class="hs-note">
+              Seleziona le cuffie in uso.
+              <strong>Solo USB sono accettate</strong>.
+            </p>
+            <div class="hs-list" id="hs-list"></div>
+            <div class="confirm-box" id="cb-usb">
+              <p>Il dispositivo è collegato tramite USB?</p>
+              <div style="display: flex; gap: 8px">
+                <button class="cbtn cbtn-no" onclick="cUsb(false)">
+                  ✗ No, jack 3.5mm</button
+                ><button class="cbtn cbtn-yes" onclick="cUsb(true)">
+                  ✓ Sì, USB
+                </button>
+              </div>
+            </div>
+            <div class="no-usb-warn" id="no-usb-warn">
+              ⚠ Nessuna cuffia USB rilevata.
+            </div>
+            <button
+              class="btn btn-blue btn-hs-ok"
+              id="btn-hs-ok"
+              onclick="confirmHS()"
+            >
+              Conferma →
+            </button>
+          </div>
+          <div class="vu-area" id="vu-area">
+            <p class="vu-note">
+              Parla nel microfono per verificare il segnale...
+            </p>
+            <div class="vu-bg"><div class="vu-bar" id="vu-bar"></div></div>
+            <p class="vu-lbl" id="vu-lbl">In ascolto...</p>
+            <video id="webcam-vid" autoplay muted playsinline></video>
+          </div>
+          <div class="cl" id="cl"></div>
+        </div>
+      </div>
+      <div class="screen" id="s-audio">
+        <div class="inner" style="text-align: center">
+          <div class="audio-ic">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#1a56db"
+              stroke-width="1.8"
+            >
+              <path d="M11 5L6 9H2v6h4l5 4V5z" />
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+            </svg>
+          </div>
+          <h2 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 6px">
+            Test Audio
+          </h2>
+          <p style="color: var(--gray-500); font-size: 0.88rem">
+            Indossa le cuffie, poi premi il pulsante.
+          </p>
+          <button class="beep-btn" onclick="playBeep()">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M11 5L6 9H2v6h4l5 4V5z" />
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07" /></svg
+            >Riproduci Suono
+          </button>
+          <p
+            style="font-size: 0.9rem; color: var(--gray-700); margin-top: 10px"
+          >
+            Hai sentito il suono?
+          </p>
+          <div class="heard-row">
+            <button class="h-no" onclick="heard(false)">✗ No</button>
+            <button class="h-yes" onclick="heard(true)">✓ Sì</button>
+          </div>
+          <button class="replay" onclick="playBeep()">
+            ↺ Riproduci di nuovo
+          </button>
+        </div>
+      </div>
+      <div class="screen" id="s-result">
+        <div class="inner">
+          <div class="res-badge" id="rb">
+            <div class="res-ic" id="ri">
+              <svg
+                id="ri-svg"
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#fff"
+                stroke-width="2.5"
+                stroke-linecap="round"
+              >
+                <polyline points="20,6 9,17 4,12" />
+              </svg>
+            </div>
+            <div class="res-title" id="rt">IDONEO</div>
+            <div class="res-note" id="rn">
+              Il tuo sistema soddisfa tutti i requisiti tecnici richiesti.
+            </div>
+          </div>
+          <div class="cl" id="res-cl"></div>
+          <p class="sent">I risultati sono stati inviati automaticamente.</p>
+          <div class="actions" id="actions" style="display: none">
+            <p class="act-lbl">Prossimi passi</p>
+            <button
+              class="crm-btn"
+              onclick="window.open('https://8mila.ccrm.cloud/','_blank')"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.9"
+                style="flex-shrink: 0"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <line x1="2" y1="12" x2="22" y2="12" />
+                <path
+                  d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
+                />
+              </svg>
+              <div>
+                <div>Apri CRM 8Mila</div>
+                <div class="crm-desc">
+                  Aggiungi ai preferiti con Ctrl+D dopo l'apertura
+                </div>
+              </div>
+            </button>
+            <button
+              class="btn btn-outline"
+              onclick="dlShortcut()"
+              style="gap: 8px; margin-top: 0"
+            >
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7,10 12,15 17,10" />
+                <line x1="12" y1="15" x2="12" y2="3" /></svg
+              >Scarica collegamento desktop CRM
+            </button>
+            <p class="act-lbl" style="margin-top: 6px">
+              Supporto tecnico remoto
+            </p>
+            <div class="sup-row">
+              <a
+                class="sup-btn"
+                href="https://www.nanosystems.it/supremo/download"
+                target="_blank"
+                ><svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.7"
+                >
+                  <rect x="2" y="3" width="20" height="14" rx="2" />
+                  <path d="M8 21h8M12 17v4" /></svg
+                ><span class="sup-name">Supremo</span
+                ><span class="sup-desc">Desktop remoto</span></a
+              >
+              <a class="sup-btn" href="https://rustdesk.com/" target="_blank"
+                ><svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.7"
+                >
+                  <path d="M9 12l2 2 4-4" />
+                  <path
+                    d="M21 12c0 1.7-.4 3.3-1.1 4.8L21 21l-4.2-1.1A9 9 0 1 1 21 12z"
+                  /></svg
+                ><span class="sup-name">RustDesk</span
+                ><span class="sup-desc">Open source</span></a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const CRM = "https://8mila.ccrm.cloud/";
+      const S = {
+        name: "",
+        email: "",
+        res: {},
+        selDev: null,
+        usbOK: null,
+        heardOK: null,
+        vuStream: null,
+      };
+      function show(id) {
+        document
+          .querySelectorAll(".screen")
+          .forEach((s) => s.classList.remove("active"));
+        document.getElementById(id).classList.add("active");
+      }
+      function prog(p) {
+        document.getElementById("prog").style.width = p + "%";
+      }
+      function ph(t, s) {
+        document.getElementById("ph-title").textContent = t;
+        document.getElementById("ph-sub").textContent = s;
+      }
+      const CK = {};
+      function addCk(k, n) {
+        CK[k] = { n, st: "pending", d: "" };
+        renderCk("cl");
+      }
+      function updCk(k, st, d = "") {
+        if (CK[k]) {
+          CK[k].st = st;
+          CK[k].d = d;
+        }
+        renderCk("cl");
+      }
+      function renderCk(target) {
+        const el = document.getElementById(target);
+        if (!el) return;
+        el.innerHTML = Object.entries(CK)
+          .map(([k, c]) => {
+            const ic =
+              c.st === "ok"
+                ? `<svg class="ci-ic" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polyline points="20,6 9,17 4,12"/></svg>`
+                : c.st === "fail"
+                  ? `<svg class="ci-ic" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`
+                  : `<div class="spinner"></div>`;
+            const cls =
+              c.st === "ok"
+                ? "ok"
+                : c.st === "fail"
+                  ? "fail"
+                  : c.st === "running"
+                    ? "run"
+                    : "";
+            return `<div class="ci ${cls}">${ic}<div><div class="ci-nm">${c.n}</div>${c.d ? `<div class="ci-dt">${c.d}</div>` : ""}</div></div>`;
+          })
+          .join("");
+      }
+      let gAnim = null;
+      function animGauge(target, unit, phase, dur = 800) {
+        document.getElementById("g-unit").textContent = unit;
+        document.getElementById("g-phase").textContent = phase;
+        const arc = document.getElementById("g-arc"),
+          num = document.getElementById("g-num");
+        const maxDash = 298,
+          maxVal = unit === "ms" ? 300 : 200,
+          from = parseFloat(num.textContent) || 0,
+          t0 = performance.now();
+        if (gAnim) cancelAnimationFrame(gAnim);
+        function tick() {
+          const p = Math.min((performance.now() - t0) / dur, 1),
+            e = 1 - Math.pow(1 - p, 3),
+            v = from + (target - from) * e;
+          num.textContent =
+            unit === "ms" ? Math.round(v).toString() : v.toFixed(1);
+          arc.style.strokeDashoffset = (
+            maxDash *
+            (1 - Math.min(v / maxVal, 1))
+          ).toFixed(1);
+          arc.style.stroke =
+            unit === "ms"
+              ? v < 50
+                ? "#10b981"
+                : v < 100
+                  ? "#f59e0b"
+                  : "#ef4444"
+              : v < 5
+                ? "#ef4444"
+                : v < 15
+                  ? "#f59e0b"
+                  : "#1a56db";
+          if (p < 1) gAnim = requestAnimationFrame(tick);
+        }
+        gAnim = requestAnimationFrame(tick);
+      }
+      function scActive(id) {
+        ["sc-dl", "sc-ul", "sc-pi", "sc-ji"].forEach((s) =>
+          document.getElementById(s).classList.remove("active"),
+        );
+        if (id) document.getElementById(id).classList.add("active");
+      }
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      async function ckOS() {
+        const ua = navigator.userAgent;
+        let os = "Sconosciuto",
+          ok = false;
+        if (ua.includes("Windows NT 10.0")) {
+          let v = "Windows 10/11";
+          try {
+            if (navigator.userAgentData) {
+              const h = await navigator.userAgentData.getHighEntropyValues([
+                "platformVersion",
+              ]);
+              v =
+                parseInt(h.platformVersion) >= 13 ? "Windows 11" : "Windows 10";
+            }
+          } catch (e) {}
+          os = v;
+          ok = true;
+        } else if (ua.includes("Windows NT 6.3")) {
+          os = "Windows 8.1";
+        } else if (ua.includes("Windows NT 6.1")) {
+          os = "Windows 7";
+        } else if (ua.includes("Mac OS X")) {
+          os = "macOS";
+          ok = true;
+        } else if (ua.includes("Linux")) {
+          os = "Linux";
+          ok = true;
+        }
+        const ram = navigator.deviceMemory || "?",
+          cpu = navigator.hardwareConcurrency || "?";
+        return {
+          ok,
+          detail: `${os} • ${ram}GB RAM • ${cpu} core`,
+          os,
+          ram,
+          cpu,
+        };
+      }
+      function ckConn() {
+        const c =
+          navigator.connection ||
+          navigator.mozConnection ||
+          navigator.webkitConnection;
+        let type = "Wi-Fi / LAN",
+          isWired = false;
+        if (c) {
+          if (c.type === "ethernet") {
+            type = "LAN (cablata)";
+            isWired = true;
+          } else if (c.type === "wifi") {
+            type = "Wi-Fi (wireless)";
+          } else {
+            type = c.effectiveType
+              ? `Wi-Fi/LAN (${c.effectiveType})`
+              : "Wi-Fi / LAN";
+          }
+        }
+        return { type, isWired, detail: type };
+      }
+      async function runPing() {
+        const ps = [];
+        for (let i = 0; i < 5; i++) {
+          const t = performance.now();
+          try {
+            await fetch("https://speed.cloudflare.com/__down?bytes=1", {
+              cache: "no-store",
+              signal: AbortSignal.timeout(4000),
+            });
+          } catch (e) {}
+          ps.push(performance.now() - t);
+          await sleep(100);
+        }
+        const avg = ps.reduce((a, b) => a + b) / ps.length;
+        return {
+          ping: Math.round(avg),
+          jitter: Math.round(
+            Math.sqrt(
+              ps.map((p) => Math.pow(p - avg, 2)).reduce((a, b) => a + b) /
+                ps.length,
+            ),
+          ),
+        };
+      }
+      async function runDL(cb) {
+        let last = 0;
+        for (const mb of [3, 7, 20]) {
+          const b = mb * 1024 * 1024,
+            t = performance.now();
+          try {
+            const r = await fetch(
+              `https://speed.cloudflare.com/__down?bytes=${b}`,
+              { cache: "no-store", signal: AbortSignal.timeout(15000) },
+            );
+            await r.blob();
+          } catch (e) {
+            break;
+          }
+          last = (b * 8) / ((performance.now() - t) / 1000) / 1e6;
+          cb(last);
+          await sleep(80);
+        }
+        return Math.round(last * 100) / 100;
+      }
+      async function runUL(cb) {
+        const b = 5 * 1024 * 1024,
+          d = new Uint8Array(b);
+        crypto.getRandomValues(d);
+        const t = performance.now();
+        try {
+          await fetch("https://speed.cloudflare.com/__up", {
+            method: "POST",
+            body: d,
+            cache: "no-store",
+            signal: AbortSignal.timeout(20000),
+          });
+        } catch (e) {}
+        const mbps = (b * 8) / ((performance.now() - t) / 1000) / 1e6;
+        cb(mbps);
+        return Math.round(mbps * 100) / 100;
+      }
+      async function getPerms() {
+        try {
+          const s = await navigator.mediaDevices.getUserMedia({
+            audio: true,
+            video: true,
+          });
+          return { audio: true, video: true, stream: s };
+        } catch (e) {
+          try {
+            const s = await navigator.mediaDevices.getUserMedia({
+              audio: true,
+            });
+            return { audio: true, video: false, stream: s };
+          } catch (e2) {
+            return { audio: false, video: false, stream: null };
+          }
+        }
+      }
+      async function enumAudio() {
+        const all = await navigator.mediaDevices.enumerateDevices();
+        return all.filter((d) => d.kind === "audioinput" && d.deviceId);
+      }
+      function isUSB(lbl) {
+        const l = (lbl || "").toLowerCase();
+        return (
+          l.includes("usb") ||
+          l.includes("jabra") ||
+          l.includes("logitech") ||
+          l.includes("plantronics") ||
+          l.includes("sennheiser") ||
+          l.includes("poly") ||
+          l.includes("evolve") ||
+          l.includes("biz ") ||
+          l.includes("headset") ||
+          l.includes("cuffia") ||
+          l.includes("voyager")
+        );
+      }
+      function isVirtual(lbl) {
+        const l = (lbl || "").toLowerCase();
+        return (
+          l.includes("virtual") ||
+          l.includes("cable") ||
+          l.includes("voicemeeter") ||
+          l.includes("stereo mix")
+        );
+      }
+      let hsResolve = null;
+      async function pickHeadset() {
+        return new Promise(async (resolve) => {
+          hsResolve = resolve;
+          const devs = await enumAudio();
+          const hsList = document.getElementById("hs-list");
+          const sorted = [
+            ...devs.filter((d) => isUSB(d.label)),
+            ...devs.filter((d) => !isUSB(d.label) && !isVirtual(d.label)),
+            ...devs.filter((d) => isVirtual(d.label)),
+          ];
+          let html = "";
+          for (const d of sorted) {
+            const usb = isUSB(d.label),
+              virt = isVirtual(d.label);
+            const badge = usb
+              ? `<span class="badge b-usb">USB</span>`
+              : virt
+                ? `<span class="badge b-virt">Virtuale</span>`
+                : "";
+            html += `<div class="hs-item" data-id="${d.deviceId}" data-lbl="${esc(d.label)}" data-usb="${usb ? "yes" : virt ? "no" : "unk"}" onclick="selHS(this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/></svg><span class="hs-name">${esc(d.label) || "Dispositivo audio"}</span>${badge}</div>`;
+          }
+          html += `<div class="hs-item" data-id="none" data-lbl="" data-usb="no" onclick="selHS(this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span class="hs-name" style="color:var(--gray-400)">Non ho cuffie USB</span></div>`;
+          hsList.innerHTML = html;
+          const usbDevs = sorted.filter((d) => isUSB(d.label));
+          if (usbDevs.length === 1) {
+            const el = hsList.querySelector('[data-usb="yes"]');
+            if (el) selHS(el);
+          }
+        });
+      }
+      function selHS(el) {
+        document
+          .querySelectorAll(".hs-item")
+          .forEach((i) => i.classList.remove("sel"));
+        el.classList.add("sel");
+        S.selDev = { id: el.dataset.id, label: el.dataset.lbl };
+        const u = el.dataset.usb,
+          cb = document.getElementById("cb-usb"),
+          nw = document.getElementById("no-usb-warn"),
+          btn = document.getElementById("btn-hs-ok");
+        cb.style.display = "none";
+        nw.style.display = "none";
+        btn.style.display = "none";
+        S.usbOK = null;
+        if (el.dataset.id === "none") {
+          nw.style.display = "block";
+          btn.style.display = "flex";
+          btn.textContent = "Continua senza cuffie →";
+          S.usbOK = false;
+        } else if (u === "yes") {
+          btn.style.display = "flex";
+          btn.textContent = "Conferma →";
+          S.usbOK = true;
+        } else if (u === "no") {
+          nw.style.display = "block";
+          btn.style.display = "flex";
+          btn.textContent = "Continua →";
+          S.usbOK = false;
+        } else {
+          cb.style.display = "block";
+        }
+      }
+      function cUsb(isUsb) {
+        S.usbOK = isUsb;
+        document.getElementById("cb-usb").style.display = "none";
+        const btn = document.getElementById("btn-hs-ok");
+        btn.style.display = "flex";
+        btn.textContent = isUsb ? "Conferma →" : "Continua →";
+        if (!isUsb)
+          document.getElementById("no-usb-warn").style.display = "block";
+      }
+      function confirmHS() {
+        document.getElementById("hs-area").classList.remove("show");
+        if (hsResolve) {
+          hsResolve({ dev: S.selDev, usb: S.usbOK });
+          hsResolve = null;
+        }
+      }
+      function startVU(stream) {
+        const ctx = new AudioContext(),
+          src = ctx.createMediaStreamSource(stream),
+          an = ctx.createAnalyser();
+        an.fftSize = 256;
+        src.connect(an);
+        S.vuAnalyser = { an, ctx };
+        const data = new Uint8Array(an.frequencyBinCount),
+          bar = document.getElementById("vu-bar"),
+          lbl = document.getElementById("vu-lbl");
+        let peak = 0;
+        function tick() {
+          an.getByteTimeDomainData(data);
+          let rms = 0;
+          for (const v of data) {
+            const s = (v - 128) / 128;
+            rms += s * s;
+          }
+          rms = Math.sqrt(rms / data.length);
+          const level = Math.min(rms * 4.5, 1);
+          peak = Math.max(peak, level);
+          bar.style.width = level * 100 + "%";
+          bar.style.background =
+            level > 0.12
+              ? "linear-gradient(90deg,#10b981,#34d399)"
+              : "linear-gradient(90deg,#9ca3af,#d1d5db)";
+          lbl.textContent =
+            level > 0.12
+              ? "✓ Segnale microfono rilevato"
+              : "In ascolto... (parla nel microfono)";
+          S.vuAnim = requestAnimationFrame(tick);
+        }
+        tick();
+        return () => peak > 0.08;
+      }
+      function stopVU() {
+        if (S.vuAnim) cancelAnimationFrame(S.vuAnim);
+        try {
+          S.vuAnalyser?.ctx?.close();
+        } catch (e) {}
+      }
+      function playBeep() {
+        const ctx = new AudioContext(),
+          o = ctx.createOscillator(),
+          g = ctx.createGain();
+        o.connect(g);
+        g.connect(ctx.destination);
+        o.frequency.value = 880;
+        g.gain.setValueAtTime(0.35, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+        o.start();
+        o.stop(ctx.currentTime + 0.65);
+      }
+      let heardResolve = null;
+      function heard(yes) {
+        S.heardOK = yes;
+        if (heardResolve) {
+          heardResolve(yes);
+          heardResolve = null;
+        }
+      }
+      function dlShortcut() {
+        const blob = new Blob(
+          [`[InternetShortcut]\nURL=${CRM}\nIconIndex=0\n`],
+          { type: "text/plain" },
+        );
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "CRM 8Mila.url";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+      function esc(s) {
+        return (s || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+      async function save(payload) {
+        try {
+          await fetch("/api/submit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      async function start() {
+        const name = document.getElementById("inp-name").value.trim(),
+          email = document.getElementById("inp-email").value.trim();
+        if (!name) {
+          document.getElementById("inp-name").focus();
+          return;
+        }
+        if (!email || !email.includes("@")) {
+          document.getElementById("inp-email").focus();
+          return;
+        }
+        S.name = name;
+        S.email = email;
+        show("s-check");
+        prog(5);
+        addCk("os", "Sistema Operativo e Hardware");
+        updCk("os", "running");
+        const osR = await ckOS();
+        updCk("os", osR.ok ? "ok" : "fail", osR.detail);
+        S.res.os = osR;
+        prog(12);
+        await sleep(250);
+        addCk("conn", "Tipo di Connessione");
+        updCk("conn", "running");
+        const connR = ckConn();
+        updCk("conn", "ok", connR.detail);
+        S.res.conn = connR;
+        prog(18);
+        await sleep(200);
+        addCk("speed", "Connessione Internet");
+        updCk("speed", "running", "Avvio speed test...");
+        ph("Speed Test", "Misurazione velocità in corso...");
+        document.getElementById("gauge-area").classList.add("show");
+        document.getElementById("g-phase").textContent = "PING";
+        document.getElementById("g-unit").textContent = "ms";
+        scActive("sc-pi");
+        const { ping, jitter } = await runPing();
+        animGauge(ping, "ms", "PING", 600);
+        document.getElementById("v-pi").textContent = ping;
+        document.getElementById("v-ji").textContent = jitter;
+        scActive("sc-ji");
+        await sleep(700);
+        scActive(null);
+        prog(32);
+        scActive("sc-dl");
+        let dl = 0;
+        dl = await runDL((mbps) => {
+          animGauge(mbps, "Mbps", "DOWNLOAD", 350);
+          document.getElementById("v-dl").textContent = mbps.toFixed(1);
+        });
+        scActive(null);
+        prog(56);
+        await sleep(350);
+        scActive("sc-ul");
+        let ul = 0;
+        ul = await runUL((mbps) => {
+          animGauge(mbps, "Mbps", "UPLOAD", 350);
+          document.getElementById("v-ul").textContent = mbps.toFixed(1);
+        });
+        scActive(null);
+        await sleep(350);
+        document.getElementById("gauge-area").classList.remove("show");
+        const speedOk = dl >= 10 && ul >= 2 && ping <= 100;
+        updCk(
+          "speed",
+          speedOk ? "ok" : dl < 3 || ul < 1 ? "fail" : "warn",
+          `${dl.toFixed(1)} Mbps ↓  ${ul.toFixed(1)} Mbps ↑  ${ping}ms ping  ${jitter}ms jitter`,
+        );
+        S.res.speed = { ok: speedOk, dl, ul, ping, jitter };
+        prog(60);
+        ph(
+          "Verifica di Sistema",
+          "Attendere il completamento di tutti i test.",
+        );
+        addCk("cam", "Webcam");
+        updCk("cam", "running");
+        addCk("hs", "Cuffie USB");
+        updCk("hs", "running");
+        addCk("mic", "Microfono");
+        updCk("mic", "running");
+        const perm = await getPerms();
+        let camOk = false,
+          camDetail = "Nessuna webcam";
+        if (perm.video && perm.stream) {
+          const vt = perm.stream.getVideoTracks();
+          if (vt.length) {
+            camOk = true;
+            camDetail = vt[0].label || "Webcam rilevata";
+          }
+        } else {
+          try {
+            const vs = await navigator.mediaDevices.getUserMedia({
+              video: true,
+            });
+            camOk = true;
+            camDetail = vs.getVideoTracks()[0]?.label || "Webcam";
+            vs.getTracks().forEach((t) => t.stop());
+          } catch (e) {}
+        }
+        updCk("cam", camOk ? "ok" : "fail", camDetail);
+        S.res.cam = { ok: camOk, detail: camDetail };
+        prog(70);
+        if (!perm.audio) {
+          updCk("hs", "fail", "Accesso negato");
+          updCk("mic", "fail", "Accesso negato");
+          S.res.hs = { ok: false, detail: "Accesso negato" };
+          S.res.mic = { ok: false };
+        } else {
+          ph("Selezione Cuffie", "Seleziona le cuffie dall'elenco.");
+          document.getElementById("hs-area").classList.add("show");
+          const hsR = await pickHeadset();
+          const usbOk = hsR.usb === true;
+          const devName =
+            hsR.dev?.id === "none"
+              ? "Nessuna"
+              : hsR.dev?.label || "Sconosciuta";
+          updCk(
+            "hs",
+            usbOk ? "ok" : "fail",
+            usbOk ? devName : `Non USB: ${devName}`,
+          );
+          S.res.hs = { ok: usbOk, detail: devName, usb: hsR.usb };
+          prog(78);
+          ph("Test Microfono", "Parla nel microfono...");
+          document.getElementById("vu-area").classList.add("show");
+          if (perm.video && perm.stream) {
+            const vid = document.getElementById("webcam-vid");
+            vid.srcObject = perm.stream;
+            vid.style.display = "block";
+          }
+          const detectAudio = startVU(perm.stream);
+          await sleep(4500);
+          const hasAudio = detectAudio();
+          stopVU();
+          document.getElementById("vu-area").classList.remove("show");
+          document.getElementById("webcam-vid").style.display = "none";
+          updCk(
+            "mic",
+            hasAudio ? "ok" : "fail",
+            hasAudio ? "Segnale rilevato" : "Nessun segnale",
+          );
+          S.res.mic = { ok: hasAudio };
+        }
+        prog(88);
+        if (perm.stream) perm.stream.getVideoTracks().forEach((t) => t.stop());
+        addCk("audio", "Test Audio");
+        updCk("audio", "running");
+        show("s-audio");
+        playBeep();
+        const audioOk = await new Promise((r) => {
+          heardResolve = r;
+        });
+        updCk(
+          "audio",
+          audioOk ? "ok" : "fail",
+          audioOk ? "Suono sentito" : "Suono non sentito",
+        );
+        S.res.audio = { ok: audioOk };
+        if (perm.stream) perm.stream.getAudioTracks().forEach((t) => t.stop());
+        prog(96);
+        const idoneo =
+          osR.ok && speedOk && S.res.hs.ok && S.res.mic.ok && audioOk;
+        S.res.idoneo = idoneo;
+        prog(100);
+        await save({
+          name: S.name,
+          email: S.email,
+          idoneo,
+          results: {
+            os: S.res.os,
+            conn: S.res.conn,
+            speed: S.res.speed,
+            cam: S.res.cam,
+            hs: S.res.hs,
+            mic: S.res.mic,
+            audio: S.res.audio,
+          },
+        });
+        showResult(idoneo);
+      }
+      function showResult(idoneo) {
+        show("s-result");
+        const rb = document.getElementById("rb");
+        rb.className = "res-badge " + (idoneo ? "ok" : "fail");
+        document.getElementById("ri").style.background = idoneo
+          ? "#10b981"
+          : "#f87171";
+        document.getElementById("ri-svg").innerHTML = idoneo
+          ? '<polyline points="20,6 9,17 4,12"/>'
+          : '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>';
+        document.getElementById("rt").textContent = idoneo
+          ? "IDONEO"
+          : "NON IDONEO";
+        if (!idoneo) {
+          const f = [];
+          if (!S.res.os?.ok) f.push("sistema operativo");
+          if (!S.res.speed?.ok) f.push("connessione");
+          if (!S.res.hs?.ok) f.push("cuffie USB");
+          if (!S.res.mic?.ok) f.push("microfono");
+          if (!S.res.audio?.ok) f.push("audio");
+          if (!S.res.cam?.ok) f.push("webcam");
+          document.getElementById("rn").textContent =
+            "Problemi: " + f.join(", ") + ".";
+        }
+        document.getElementById("res-cl").innerHTML =
+          document.getElementById("cl").innerHTML;
+        if (idoneo) {
+          document.getElementById("actions").style.display = "flex";
+          setTimeout(() => window.open(CRM, "_blank"), 800);
+        }
+      }
+    </script>
+  </body>
+</html>
