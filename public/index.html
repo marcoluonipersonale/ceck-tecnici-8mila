@@ -396,8 +396,7 @@ async function runDL(cb){
 }
 async function runUL(cb){ cb(0); return 0; }
 
-
-// Permissions + devices
+  // Permissions + devices
 async function getPerms(){
   try{const s=await navigator.mediaDevices.getUserMedia({audio:true,video:true});return{audio:true,video:true,stream:s};}
   catch(e){
