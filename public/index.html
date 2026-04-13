@@ -1194,7 +1194,7 @@
             method: "POST",
             body: d,
             cache: "no-store",
-            signal: AbortSignal.timeout(20000),
+            signal: AbortSignal.timeout(8000),
           });
         } catch (e) {}
         const mbps = (b * 8) / ((performance.now() - t) / 1000) / 1e6;
