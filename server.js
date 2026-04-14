@@ -17,13 +17,15 @@ function jsonbinRequest(method, urlPath, body) {
       headers: {
         'X-Master-Key': API_KEY,
         'Content-Type': 'application/json',
-        ...(data ? { 'Content-Length': Buffer.byteLength(data) } : {})
+        ...(data ? {'Content-Length': Buffer.byteLength(data)} : {})
       }
     };
     const req = https.request(options, res => {
       let str = '';
       res.on('data', c => str += c);
-      res.on('end', () => { try { resolve(JSON.parse(str)); } catch(e) { resolve({}); } });
+      res.on('end', () => {
+        try { resolve(JSON.parse(str)); } catch(e) { resolve({}); }
+      });
     });
     req.on('error', reject);
     if (data) req.write(data);
@@ -32,20 +34,29 @@ function jsonbinRequest(method, urlPath, body) {
 }
 
 async function getDB() {
-  const res = await jsonbinRequest('GET', `/v3/b/${BIN_ID}/latest`);
-  return res.record || { candidates: [] };
+  try {
+    const res = await jsonbinRequest('GET', `/v3/b/${BIN_ID}/latest`);
+    return res.record || {candidates: []};
+  } catch(e) {
+    console.error('getDB error:', e);
+    return {candidates: []};
+  }
 }
 
 async function saveDB(db) {
-  await jsonbinRequest('PUT', `/v3/b/${BIN_ID}`, db);
+  try {
+    await jsonbinRequest('PUT', `/v3/b/${BIN_ID}`, db);
+  } catch(e) {
+    console.error('saveDB error:', e);
+  }
 }
 
-app.use(express.json({ limit: '1mb' }));
+app.use(express.json({limit: '1mb'}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/api/results', async (req, res) => {
-  try { const db = await getDB(); res.json(db.candidates || []); }
-  catch(e) { console.error(e); res.json([]); }
+  const db = await getDB();
+  res.json(db.candidates || []);
 });
 
 app.post('/api/submit', async (req, res) => {
@@ -59,8 +70,12 @@ app.post('/api/submit', async (req, res) => {
     };
     db.candidates.unshift(entry);
     await saveDB(db);
-    res.json({ ok: true, id: entry.id });
-  } catch(e) { console.error(e); res.status(500).json({ ok: false }); }
+    console.log('Saved candidate:', entry.name);
+    res.json({ok: true, id: entry.id});
+  } catch(e) {
+    console.error('submit error:', e);
+    res.status(500).json({ok: false});
+  }
 });
 
 app.delete('/api/results/:id', async (req, res) => {
@@ -68,10 +83,12 @@ app.delete('/api/results/:id', async (req, res) => {
     const db = await getDB();
     db.candidates = (db.candidates || []).filter(c => c.id !== req.params.id);
     await saveDB(db);
-    res.json({ ok: true });
-  } catch(e) { res.status(500).json({ ok: false }); }
+    res.json({ok: true});
+  } catch(e) {
+    res.status(500).json({ok: false});
+  }
 });
 
 app.listen(PORT, () => {
-  console.log(`✅ PC Check in esecuzione su http://localhost:${PORT}`);
+  console.log(`✅ PC Check attivo su porta ${PORT}`);
 });
