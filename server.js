@@ -7,12 +7,12 @@ const PORT = process.env.PORT || 3000;
 const BIN_ID = '69de1e8d36566621a8b063bc';
 const API_KEY = '$2a$10$RtQ4M/XD9wjo6tblMUCJbeYe/19NUQB0hrbY5z/PhshWBlPBIQlGy';
 
-function jsonbinRequest(method, path, body) {
+function jsonbinRequest(method, urlPath, body) {
   return new Promise((resolve, reject) => {
     const data = body ? JSON.stringify(body) : null;
     const options = {
       hostname: 'api.jsonbin.io',
-      path,
+      path: urlPath,
       method,
       headers: {
         'X-Master-Key': API_KEY,
