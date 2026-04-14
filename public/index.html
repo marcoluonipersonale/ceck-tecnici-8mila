@@ -174,18 +174,22 @@ input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,86,219,.1)}
   <div class="cl" id="res-cl"></div>
   <p class="sent">I risultati sono stati inviati automaticamente.</p>
   <div class="actions" id="actions" style="display:none">
-    <p class="act-lbl">Prossimi passi</p>
+  <div style="background:linear-gradient(135deg,#fffbeb,#fef3c7);border:2px solid #fcd34d;border-radius:12px;padding:18px 20px;margin-bottom:8px">
+    <div style="font-size:1rem;font-weight:800;color:#92400e;margin-bottom:8px">📌 Salva il link del CRM!</div>
+    <div style="font-size:.88rem;color:#92400e;line-height:1.6;margin-bottom:14px">Per accedere facilmente al CRM ogni volta, salvalo subito:<br><strong>1.</strong> Clicca "Apri CRM" qui sotto<br><strong>2.</strong> Premi <strong>Ctrl+D</strong> per aggiungerlo ai preferiti<br><strong>oppure</strong> scarica il collegamento per il desktop</div>
     <button class="crm-btn" onclick="window.open('https://8mila.ccrm.cloud/','_blank')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-      <div><div>Apri CRM 8Mila</div><div class="crm-desc">Aggiungi ai preferiti con Ctrl+D dopo l'apertura</div></div>
+      <div><div>Apri CRM 8Mila</div><div class="crm-desc">Poi premi Ctrl+D per salvarlo nei preferiti</div></div>
     </button>
-    <button class="btn btn-outline" onclick="dlShortcut()" style="gap:8px;margin-top:0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Scarica collegamento desktop CRM</button>
-    <p class="act-lbl" style="margin-top:6px">Supporto tecnico remoto</p>
-    <div class="sup-row">
-      <a class="sup-btn" href="https://www.nanosystems.it/supremo/download" target="_blank"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span class="sup-name">Supremo</span><span class="sup-desc">Desktop remoto</span></a>
-      <a class="sup-btn" href="https://rustdesk.com/" target="_blank"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 12l2 2 4-4"/><path d="M21 12c0 1.7-.4 3.3-1.1 4.8L21 21l-4.2-1.1A9 9 0 1 1 21 12z"/></svg><span class="sup-name">RustDesk</span><span class="sup-desc">Open source</span></a>
-    </div>
+    <button class="btn btn-outline" onclick="dlShortcut();showDesktoMsg()" style="gap:8px;margin-top:8px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Scarica collegamento desktop</button>
+    <div id="desktop-msg" style="display:none;margin-top:8px;font-size:.8rem;color:#065f46;background:#ecfdf5;border-radius:8px;padding:8px 12px">✅ File scaricato! Aprilo dalla cartella Download per salvarlo sul desktop.</div>
   </div>
+  <p class="act-lbl" style="margin-top:6px">Supporto tecnico remoto</p>
+  <div class="sup-row">
+    <a class="sup-btn" href="https://www.nanosystems.it/supremo/download" target="_blank"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span class="sup-name">Supremo</span><span class="sup-desc">Desktop remoto</span></a>
+    <a class="sup-btn" href="https://rustdesk.com/" target="_blank"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 12l2 2 4-4"/><path d="M21 12c0 1.7-.4 3.3-1.1 4.8L21 21l-4.2-1.1A9 9 0 1 1 21 12z"/></svg><span class="sup-name">RustDesk</span><span class="sup-desc">Open source</span></a>
+  </div>
+</div>
 </div>
 </div>
 
