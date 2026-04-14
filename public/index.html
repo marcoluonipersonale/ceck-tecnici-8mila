@@ -273,20 +273,45 @@ async function ckConn(){
   return new Promise(resolve=>{
     let type='Wi-Fi / LAN',isWired=false;
     try{
-      const pc=new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]});
-      pc.createDataChannel('');pc.createOffer().then(o=>pc.setLocalDescription(o));
+      const pc=new RTCPeerConnection({iceServers:[]});
+      pc.createDataChannel('');
+      pc.createOffer().then(o=>pc.setLocalDescription(o));
       const candidates=[];let resolved=false;
       pc.onicecandidate=e=>{
-        if(e.candidate){candidates.push(e.candidate.candidate);}
-        else{if(resolved)return;resolved=true;pc.close();
-          const all=candidates.join(' ').toLowerCase();
-          if(all.includes('eth')||all.includes('ethernet')||all.includes('enp')||all.includes('eno')){type='LAN (cablata)';isWired=true;}
-          else if(all.includes('wlan')||all.includes('wifi')||all.includes('wireless')){type='Wi-Fi (wireless)';isWired=false;}
-          else{const cn=navigator.connection;if(cn&&cn.type==='ethernet'){type='LAN (cablata)';isWired=true;}else if(cn&&cn.type==='wifi'){type='Wi-Fi (wireless)';}}
+        if(e.candidate){
+          candidates.push(e.candidate.candidate);
+        } else {
+          if(resolved)return;resolved=true;pc.close();
+          const all=candidates.join('\n').toLowerCase();
+          // Metodo 1: network-cost (Chrome/Windows: 0=cablata, 10=WiFi)
+          const costMatch=all.match(/network-cost\s+(\d+)/);
+          if(costMatch){
+            const cost=parseInt(costMatch[1]);
+            if(cost===0){type='LAN (cablata)';isWired=true;resolve({type,isWired,detail:type});return;}
+            if(cost>=10){type='Wi-Fi (wireless)';isWired=false;resolve({type,isWired,detail:type});return;}
+          }
+          // Metodo 2: nome interfaccia nel candidato
+          if(all.includes(' eth')||all.includes('ethernet')||all.includes('enp')||all.includes('eno')||/ en0[ \n]/.test(all)){
+            type='LAN (cablata)';isWired=true;
+          } else if(all.includes('wlan')||all.includes('wifi')||all.includes('wireless')){
+            type='Wi-Fi (wireless)';isWired=false;
+          } else {
+            // Metodo 3: navigator.connection fallback
+            const cn=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
+            if(cn&&cn.type==='ethernet'){type='LAN (cablata)';isWired=true;}
+            else if(cn&&cn.type==='wifi'){type='Wi-Fi (wireless)';}
+          }
           resolve({type,isWired,detail:type});
         }
       };
-      setTimeout(()=>{if(!resolved){resolved=true;try{pc.close();}catch(e2){}resolve({type,isWired,detail:type});}},3000);
+      setTimeout(()=>{
+        if(!resolved){resolved=true;try{pc.close();}catch(e2){}
+          const cn=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
+          if(cn&&cn.type==='ethernet'){type='LAN (cablata)';isWired=true;}
+          else if(cn&&cn.type==='wifi'){type='Wi-Fi (wireless)';}
+          resolve({type,isWired,detail:type});
+        }
+      },3000);
     }catch(e){resolve({type,isWired,detail:type});}
   });
 }
