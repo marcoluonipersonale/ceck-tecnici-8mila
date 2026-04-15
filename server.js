@@ -64,7 +64,9 @@ app.post('/api/submit', (req, res) => {
   console.log('Saved:', entry.name);
   res.json({ ok: true, id: entry.id });
 });
-
+app.post('/api/speedtest', express.raw({limit:'10mb', type:'*/*'}), (req, res) => {
+  res.json({ok:true});
+});
 app.delete('/api/results/:id', (req, res) => {
   DB.candidates = DB.candidates.filter(c => c.id !== req.params.id);
   saveToJsonbin();
