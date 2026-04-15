@@ -387,17 +387,15 @@ async function runDL(cb){
 }
 
 async function runUL(cb){
-  // Genera 64KB di dati casuali (limite crypto.getRandomValues)
   const chunk=new Uint8Array(65536);
   crypto.getRandomValues(chunk);
-  // Ripeti 64 volte per arrivare a ~4MB
   const parts=[];
   for(let i=0;i<64;i++)parts.push(chunk);
   const body=new Blob(parts);
   const t=performance.now();
   try{
     await Promise.race([
-      fetch('https://speed.cloudflare.com/__up',{method:'POST',body,cache:'no-store'}),
+      fetch('/api/speedtest',{method:'POST',body,cache:'no-store'}),
       new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),9000))
     ]);
   }catch(e){}
