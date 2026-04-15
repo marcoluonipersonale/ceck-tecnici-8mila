@@ -367,21 +367,26 @@ async function runDL(cb){
   let last=0;
   for(const mb of[3,7,20]){const b=mb*1024*1024,t=performance.now();try{const r=await fetch(`https://speed.cloudflare.com/__down?bytes=${b}`,{cache:'no-store',signal:AbortSignal.timeout(15000)});await r.blob();}catch(e){break;}last=(b*8)/((performance.now()-t)/1000)/1e6;cb(last);await sleep(80);}
   return Math.round(last*100)/100;
-}
+  
 async function runUL(cb){
-  const b=4*1024*1024;
+  const b=65536;
   const d=new Uint8Array(b);
   crypto.getRandomValues(d);
+  const repeated=[];
+  for(let i=0;i<64;i++) repeated.push(d);
+  const blob=new Blob(repeated);
   const t=performance.now();
   try{
-    await fetch('https://speed.cloudflare.com/__up',{
-      method:'POST',body:d,cache:'no-store',
-      signal:AbortSignal.timeout(8000)
-    });
+    await Promise.race([
+      fetch('https://speed.cloudflare.com/__up',{method:'POST',body:blob,cache:'no-store'}),
+      new Promise((_,rej)=>setTimeout(()=>rej('timeout'),8000))
+    ]);
   }catch(e){}
-  const mbps=(b*8)/((performance.now()-t)/1000)/1e6;
+  const secs=(performance.now()-t)/1000;
+  const mbps=secs>0.3?(blob.size*8)/secs/1e6:0;
+  const result=Math.round(mbps*100)/100;
   cb(Math.round(mbps*10)/10);
-  return Math.round(mbps*100)/100;
+  return result;
 }
 
 async function getPerms(){
