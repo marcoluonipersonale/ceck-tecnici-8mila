@@ -4,27 +4,33 @@ const https = require('https');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const BIN_ID = '69de1e8d36566621a8b063bc';
-const API_KEY = '$2a$10$RtQ4M/XD9wjo6tblMUCJbeYe/19NUQB0hrbY5z/PhshWBlPBIQlGy';
+const SUPA_URL = 'https://htwwnmwwkmzmgwqxsamf.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0d3dubXd3a216bWd3cXhzYW1mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyMzg1NzksImV4cCI6MjA5MTgxNDU3OX0.jRaWxHUTD-mfInv0L0qpwWAHwBX5kjchzHTZAK0d8qU';
 
-let DB = { candidates: [] };
+app.use(express.json({ limit: '1mb' }));
+app.use(express.static(path.join(__dirname, 'public')));
 
-function jsonbin(method, urlPath, body) {
+function supabase(method, endpoint, body) {
   return new Promise((resolve, reject) => {
+    const url = new URL(SUPA_URL + endpoint);
     const data = body ? JSON.stringify(body) : null;
     const req = https.request({
-      hostname: 'api.jsonbin.io',
-      path: urlPath,
+      hostname: url.hostname,
+      path: url.pathname + url.search,
       method,
       headers: {
-        'X-Master-Key': API_KEY,
+        'apikey': SUPA_KEY,
+        'Authorization': 'Bearer ' + SUPA_KEY,
         'Content-Type': 'application/json',
+        'Prefer': method === 'POST' ? 'return=representation' : '',
         ...(data ? { 'Content-Length': Buffer.byteLength(data) } : {})
       }
     }, res => {
       let s = '';
       res.on('data', c => s += c);
-      res.on('end', () => { try { resolve(JSON.parse(s)); } catch(e) { resolve({}); } });
+      res.on('end', () => {
+        try { resolve(JSON.parse(s)); } catch(e) { resolve([]); }
+      });
     });
     req.on('error', reject);
     if (data) req.write(data);
@@ -32,66 +38,48 @@ function jsonbin(method, urlPath, body) {
   });
 }
 
-async function loadFromJsonbin() {
-  try {
-    const res = await jsonbin('GET', `/v3/b/${BIN_ID}/latest`);
-    if (res.record && Array.isArray(res.record.candidates)) {
-      DB = res.record;
-      console.log(`Caricati ${DB.candidates.length} candidati da JSONBin`);
-    }
-  } catch(e) {
-    console.error('Errore caricamento JSONBin:', e.message);
-  }
-}
-
-async function saveToJsonbin() {
-  try {
-    await jsonbin('PUT', `/v3/b/${BIN_ID}`, DB);
-    console.log('Salvato su JSONBin OK');
-  } catch(e) {
-    console.error('Errore salvataggio JSONBin:', e.message);
-  }
-}
-
-app.use(express.json({ limit: '1mb' }));
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Endpoint speedtest upload (stesso dominio, non bloccato)
+// Endpoint speedtest upload
 app.post('/api/speedtest', express.raw({ limit: '10mb', type: '*/*' }), (req, res) => {
   res.json({ ok: true });
 });
 
-app.get('/api/results', (req, res) => {
-  res.json(DB.candidates || []);
+app.get('/api/results', async (req, res) => {
+  try {
+    const rows = await supabase('GET', '/rest/v1/candidates?order=date.desc&select=*');
+    res.json(Array.isArray(rows) ? rows : []);
+  } catch(e) {
+    console.error('GET error:', e.message);
+    res.json([]);
+  }
 });
 
 app.post('/api/submit', async (req, res) => {
   try {
     const entry = {
       id: Date.now().toString(36) + Math.random().toString(36).slice(2),
-      ...req.body,
-      date: new Date().toISOString()
+      name: req.body.name,
+      email: req.body.email,
+      idoneo: req.body.idoneo,
+      date: new Date().toISOString(),
+      results: req.body.results
     };
-    DB.candidates.unshift(entry);
-    await saveToJsonbin(); // sincrono — garantisce persistenza
+    const result = await supabase('POST', '/rest/v1/candidates', entry);
     console.log('Salvato:', entry.name);
     res.json({ ok: true, id: entry.id });
   } catch(e) {
-    console.error(e);
+    console.error('POST error:', e.message);
     res.status(500).json({ ok: false });
   }
 });
 
 app.delete('/api/results/:id', async (req, res) => {
   try {
-    DB.candidates = DB.candidates.filter(c => c.id !== req.params.id);
-    await saveToJsonbin();
+    await supabase('DELETE', `/rest/v1/candidates?id=eq.${req.params.id}`);
     res.json({ ok: true });
   } catch(e) {
+    console.error('DELETE error:', e.message);
     res.status(500).json({ ok: false });
   }
 });
 
-loadFromJsonbin().then(() => {
-  app.listen(PORT, () => console.log(`PC Check attivo su porta ${PORT}`));
-});
+app.listen(PORT, () => console.log(`PC Check attivo su porta ${PORT}`));
