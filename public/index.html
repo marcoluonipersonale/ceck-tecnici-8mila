@@ -74,6 +74,18 @@ input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,86,219,.1)}
 .sup-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .sup-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:11px;border-radius:8px;border:1.5px solid var(--gray-200);background:#fff;cursor:pointer;text-decoration:none;color:var(--gray-700);transition:all .15s}.sup-btn:hover{border-color:var(--blue);background:var(--blue-lt)}
 .sup-name{font-size:.83rem;font-weight:600}.sup-desc{font-size:.72rem;color:var(--gray-400)}
+/* Connection modal */
+.conn-modal{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:300;display:none;align-items:center;justify-content:center;padding:20px}
+.conn-modal.show{display:flex;animation:up .25s ease}
+.conn-modal-box{background:#fff;border-radius:18px;width:100%;max-width:420px;padding:28px 24px;box-shadow:0 24px 80px rgba(0,0,0,.35);text-align:center}
+.conn-modal-title{font-size:1.1rem;font-weight:800;margin-bottom:8px}
+.conn-modal-sub{font-size:.88rem;color:var(--gray-500);margin-bottom:24px;line-height:1.5}
+.conn-btns{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.conn-btn{padding:16px 12px;border-radius:12px;border:2px solid var(--gray-200);background:#fff;cursor:pointer;transition:all .15s;font:600 .9rem var(--f)}
+.conn-btn:hover{border-color:var(--blue);background:var(--blue-lt)}
+.conn-btn-icon{font-size:2rem;margin-bottom:8px}
+.conn-btn-label{font-size:.9rem;font-weight:700;color:var(--gray-900)}
+.conn-btn-desc{font-size:.75rem;color:var(--gray-500);margin-top:2px}
 /* Headset modal */
 .hs-modal{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
 .hs-modal.show{display:flex;animation:up .25s ease}
@@ -174,27 +186,44 @@ input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,86,219,.1)}
   <div class="cl" id="res-cl"></div>
   <p class="sent">I risultati sono stati inviati automaticamente.</p>
   <div class="actions" id="actions" style="display:none">
-  <div style="background:linear-gradient(135deg,#fffbeb,#fef3c7);border:2px solid #fcd34d;border-radius:12px;padding:18px 20px;margin-bottom:8px">
-    <div style="font-size:1rem;font-weight:800;color:#92400e;margin-bottom:8px">📌 Salva il link del CRM!</div>
-    <div style="font-size:.88rem;color:#92400e;line-height:1.6;margin-bottom:14px">Per accedere facilmente al CRM ogni volta, salvalo subito:<br><strong>1.</strong> Clicca "Apri CRM" qui sotto<br><strong>2.</strong> Premi <strong>Ctrl+D</strong> per aggiungerlo ai preferiti<br><strong>oppure</strong> scarica il collegamento per il desktop</div>
+    <p class="act-lbl">Prossimi passi</p>
     <button class="crm-btn" onclick="window.open('https://8mila.ccrm.cloud/','_blank')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-      <div><div>Apri CRM 8Mila</div><div class="crm-desc">Poi premi Ctrl+D per salvarlo nei preferiti</div></div>
+      <div><div>Apri CRM 8Mila</div><div class="crm-desc">Aggiungi ai preferiti con Ctrl+D dopo l'apertura</div></div>
     </button>
-    <button class="btn btn-outline" onclick="dlShortcut();showDesktoMsg()" style="gap:8px;margin-top:8px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Scarica collegamento desktop</button>
-    <div id="desktop-msg" style="display:none;margin-top:8px;font-size:.8rem;color:#065f46;background:#ecfdf5;border-radius:8px;padding:8px 12px">✅ File scaricato! Aprilo dalla cartella Download per salvarlo sul desktop.</div>
+    <button class="btn btn-outline" onclick="dlShortcut()" style="gap:8px;margin-top:0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Scarica collegamento desktop CRM</button>
+    <p class="act-lbl" style="margin-top:6px">Supporto tecnico remoto</p>
+    <div class="sup-row">
+      <a class="sup-btn" href="https://www.nanosystems.it/supremo/download" target="_blank"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span class="sup-name">Supremo</span><span class="sup-desc">Desktop remoto</span></a>
+      <a class="sup-btn" href="https://rustdesk.com/" target="_blank"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 12l2 2 4-4"/><path d="M21 12c0 1.7-.4 3.3-1.1 4.8L21 21l-4.2-1.1A9 9 0 1 1 21 12z"/></svg><span class="sup-name">RustDesk</span><span class="sup-desc">Open source</span></a>
+    </div>
   </div>
-  <p class="act-lbl" style="margin-top:6px">Supporto tecnico remoto</p>
-  <div class="sup-row">
-    <a class="sup-btn" href="https://www.nanosystems.it/supremo/download" target="_blank"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span class="sup-name">Supremo</span><span class="sup-desc">Desktop remoto</span></a>
-    <a class="sup-btn" href="https://rustdesk.com/" target="_blank"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 12l2 2 4-4"/><path d="M21 12c0 1.7-.4 3.3-1.1 4.8L21 21l-4.2-1.1A9 9 0 1 1 21 12z"/></svg><span class="sup-name">RustDesk</span><span class="sup-desc">Open source</span></a>
-  </div>
-</div>
 </div>
 </div>
 
 </div><!-- .card -->
 <p style="text-align:center;font-size:.75rem;color:#9ca3af;margin-top:10px;letter-spacing:.05em">made by ML</p>
+
+<!-- CONNECTION MODAL -->
+<div class="conn-modal" id="conn-modal">
+  <div class="conn-modal-box">
+    <div style="font-size:2rem;margin-bottom:12px">🌐</div>
+    <div class="conn-modal-title">Come sei connesso?</div>
+    <div class="conn-modal-sub">Non riesco a rilevarlo automaticamente.<br>Seleziona il tipo di connessione.</div>
+    <div class="conn-btns">
+      <button class="conn-btn" onclick="confirmConn('LAN (cablata)',true)">
+        <div class="conn-btn-icon">🔌</div>
+        <div class="conn-btn-label">Cavo LAN</div>
+        <div class="conn-btn-desc">Connesso con cavo ethernet</div>
+      </button>
+      <button class="conn-btn" onclick="confirmConn('Wi-Fi (wireless)',false)">
+        <div class="conn-btn-icon">📶</div>
+        <div class="conn-btn-label">Wi-Fi</div>
+        <div class="conn-btn-desc">Connesso senza fili</div>
+      </button>
+    </div>
+  </div>
+</div>
 
 <!-- HEADSET MODAL -->
 <div class="hs-modal" id="hs-modal">
@@ -269,52 +298,65 @@ async function ckOS(){
   return{ok,detail:`${os} • ${ram}GB RAM • ${cpu} core`,os,ram,cpu};
 }
 
+let connResolve=null;
+function confirmConn(type,isWired){
+  document.getElementById('conn-modal').classList.remove('show');
+  if(connResolve){connResolve({type,isWired,detail:type,manual:true});connResolve=null;}
+}
 async function ckConn(){
   return new Promise(resolve=>{
     let type='Wi-Fi / LAN',isWired=false;
     try{
       const pc=new RTCPeerConnection({iceServers:[]});
-      pc.createDataChannel('');
-      pc.createOffer().then(o=>pc.setLocalDescription(o));
-      let resolved=false;
-      const allCandidates=[];
+      pc.createDataChannel('');pc.createOffer().then(o=>pc.setLocalDescription(o));
+      const candidates=[];let resolved=false;
       pc.onicecandidate=e=>{
-        if(e.candidate){
-          allCandidates.push(e.candidate.candidate);
-        } else {
+        if(e.candidate){candidates.push(e.candidate.candidate);}
+        else{
           if(resolved)return;
-          resolved=true;
-          pc.close();
-          const all=allCandidates.join('\n');
-          console.log('ICE candidates:', all);
-          // network-cost 0 = cablata, network-cost 10 = WiFi
+          const all=candidates.join('\n');
+          // Metodo 1: network-cost (Chrome: 0=cablata, 10=WiFi)
           const costMatch=all.match(/network-cost (\d+)/i);
           if(costMatch){
             const cost=parseInt(costMatch[1]);
-            console.log('network-cost:', cost);
-            if(cost===0){type='LAN (cablata)';isWired=true;}
-            else{type='Wi-Fi (wireless)';isWired=false;}
-          } else if(all.match(/\beth\d|\benp|\beno|\ben0\b/)){
-            type='LAN (cablata)';isWired=true;
-          } else {
-            type='Wi-Fi / LAN';
+            if(cost===0){resolved=true;pc.close();resolve({type:'LAN (cablata)',isWired:true,detail:'LAN (cablata)'});return;}
+            if(cost>=10){resolved=true;pc.close();resolve({type:'Wi-Fi (wireless)',isWired:false,detail:'Wi-Fi (wireless)'});return;}
           }
-          resolve({type,isWired,detail:type});
+          // Metodo 2: nome interfaccia
+          const allLow=all.toLowerCase();
+          if(allLow.match(/\beth\d|\benp|\beno/) || all.includes(' en0 ')){
+            resolved=true;pc.close();resolve({type:'LAN (cablata)',isWired:true,detail:'LAN (cablata)'});return;
+          }
+          if(allLow.includes('wlan')||allLow.includes('wifi')||allLow.includes('wireless')){
+            resolved=true;pc.close();resolve({type:'Wi-Fi (wireless)',isWired:false,detail:'Wi-Fi (wireless)'});return;
+          }
+          // Metodo 3: navigator.connection
+          const cn=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
+          if(cn&&cn.type==='ethernet'){resolved=true;pc.close();resolve({type:'LAN (cablata)',isWired:true,detail:'LAN (cablata)'});return;}
+          if(cn&&cn.type==='wifi'){resolved=true;pc.close();resolve({type:'Wi-Fi (wireless)',isWired:false,detail:'Wi-Fi (wireless)'});return;}
+          // Non rilevato — chiedi all'utente
+          resolved=true;pc.close();
+          connResolve=resolve;
+          document.getElementById('conn-modal').classList.add('show');
         }
       };
       setTimeout(()=>{
         if(!resolved){
-          resolved=true;
-          try{pc.close();}catch(e2){}
-          resolve({type:'Wi-Fi / LAN',isWired:false,detail:'Wi-Fi / LAN'});
+          resolved=true;try{pc.close();}catch(e2){}
+          const cn=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
+          if(cn&&cn.type==='ethernet'){resolve({type:'LAN (cablata)',isWired:true,detail:'LAN (cablata)'});return;}
+          if(cn&&cn.type==='wifi'){resolve({type:'Wi-Fi (wireless)',isWired:false,detail:'Wi-Fi (wireless)'});return;}
+          connResolve=resolve;
+          document.getElementById('conn-modal').classList.add('show');
         }
       },3000);
     }catch(e){
-      resolve({type:'Wi-Fi / LAN',isWired:false,detail:'Wi-Fi / LAN'});
+      connResolve=resolve;
+      document.getElementById('conn-modal').classList.add('show');
     }
   });
 }
-  
+
 async function runPing(){
   const ps=[];
   for(let i=0;i<5;i++){const t=performance.now();try{await fetch('https://speed.cloudflare.com/__down?bytes=1',{cache:'no-store',signal:AbortSignal.timeout(4000)});}catch(e){}ps.push(performance.now()-t);await sleep(100);}
@@ -326,7 +368,21 @@ async function runDL(cb){
   for(const mb of[3,7,20]){const b=mb*1024*1024,t=performance.now();try{const r=await fetch(`https://speed.cloudflare.com/__down?bytes=${b}`,{cache:'no-store',signal:AbortSignal.timeout(15000)});await r.blob();}catch(e){break;}last=(b*8)/((performance.now()-t)/1000)/1e6;cb(last);await sleep(80);}
   return Math.round(last*100)/100;
 }
-async function runUL(cb){cb(0);return 0;}
+async function runUL(cb){
+  const b=4*1024*1024;
+  const d=new Uint8Array(b);
+  crypto.getRandomValues(d);
+  const t=performance.now();
+  try{
+    await fetch('https://speed.cloudflare.com/__up',{
+      method:'POST',body:d,cache:'no-store',
+      signal:AbortSignal.timeout(8000)
+    });
+  }catch(e){}
+  const mbps=(b*8)/((performance.now()-t)/1000)/1e6;
+  cb(Math.round(mbps*10)/10);
+  return Math.round(mbps*100)/100;
+}
 
 async function getPerms(){
   try{const s=await navigator.mediaDevices.getUserMedia({audio:true,video:true});return{audio:true,video:true,stream:s};}
@@ -445,8 +501,8 @@ async function start(){
   dl=await runDL(mbps=>{animGauge(mbps,'Mbps','DOWNLOAD',350);document.getElementById('v-dl').textContent=mbps.toFixed(1);});
   scActive(null);prog(56);await sleep(350);
   document.getElementById('gauge-area').classList.remove('show');
-  const speedOk=dl>=10&&ping<=100;
-  updCk('speed',speedOk?'ok':dl<3?'fail':'warn',`${dl.toFixed(1)} Mbps ↓  ${ping}ms ping  ${jitter}ms jitter`);
+  const speedOk=dl>=10&&ul>=2&&ping<=100;
+  updCk('speed',speedOk?'ok':(dl<3||ul<1)?'fail':'warn',`${dl.toFixed(1)} Mbps ↓  ${ul.toFixed(1)} Mbps ↑  ${ping}ms ping  ${jitter}ms jitter`);
   S.res.speed={ok:speedOk,dl,ul:0,ping,jitter};prog(60);ph('Verifica di Sistema','Attendere il completamento di tutti i test.');
 
   addCk('cam','Webcam');updCk('cam','running');addCk('hs','Cuffie USB');updCk('hs','running');addCk('mic','Microfono');updCk('mic','running');
@@ -503,7 +559,6 @@ function showResult(idoneo){
   document.getElementById('res-cl').innerHTML=document.getElementById('cl').innerHTML;
   if(idoneo){document.getElementById('actions').style.display='flex';setTimeout(()=>window.open(CRM,'_blank'),800);}
 }
-  function showDesktoMsg(){document.getElementById('desktop-msg').style.display='block';}
 </script>
 </body>
 </html>
