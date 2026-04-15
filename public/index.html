@@ -19,7 +19,7 @@
 }
 html{min-height:100%;background:linear-gradient(135deg,#f0f4ff 0%,#f9fafb 60%)}
 body{font-family:var(--f);color:var(--gray-900);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
-.card{background:#fff;border-radius:16px;box-shadow:0 8px 48px rgba(26,86,219,.1),0 2px 8px rgba(0,0,0,.06);width:100%;max-width:540px;overflow:hidden;position:relative}
+.card{background:#fff;border-radius:16px;box-shadow:0 8px 48px rgba(26,86,219,.1),0 2px 8px rgba(0,0,0,.06);width:100%;max-width:540px;overflow:hidden}
 .card::before{content:'';display:block;height:4px;background:linear-gradient(90deg,#1a56db,#3b82f6,#60a5fa)}
 .screen{display:none}.screen.active{display:block;animation:up .3s ease}
 @keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
@@ -74,19 +74,14 @@ input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,86,219,.1)}
 .sup-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .sup-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:11px;border-radius:8px;border:1.5px solid var(--gray-200);background:#fff;cursor:pointer;text-decoration:none;color:var(--gray-700);transition:all .15s}.sup-btn:hover{border-color:var(--blue);background:var(--blue-lt)}
 .sup-name{font-size:.83rem;font-weight:600}.sup-desc{font-size:.72rem;color:var(--gray-400)}
-/* Connection modal */
 .conn-modal{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:300;display:none;align-items:center;justify-content:center;padding:20px}
 .conn-modal.show{display:flex;animation:up .25s ease}
 .conn-modal-box{background:#fff;border-radius:18px;width:100%;max-width:420px;padding:28px 24px;box-shadow:0 24px 80px rgba(0,0,0,.35);text-align:center}
-.conn-modal-title{font-size:1.1rem;font-weight:800;margin-bottom:8px}
-.conn-modal-sub{font-size:.88rem;color:var(--gray-500);margin-bottom:24px;line-height:1.5}
-.conn-btns{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.conn-btn{padding:16px 12px;border-radius:12px;border:2px solid var(--gray-200);background:#fff;cursor:pointer;transition:all .15s;font:600 .9rem var(--f)}
-.conn-btn:hover{border-color:var(--blue);background:var(--blue-lt)}
+.conn-btns{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+.conn-btn{padding:16px 12px;border-radius:12px;border:2px solid var(--gray-200);background:#fff;cursor:pointer;transition:all .15s;font:600 .9rem var(--f)}.conn-btn:hover{border-color:var(--blue);background:var(--blue-lt)}
 .conn-btn-icon{font-size:2rem;margin-bottom:8px}
 .conn-btn-label{font-size:.9rem;font-weight:700;color:var(--gray-900)}
 .conn-btn-desc{font-size:.75rem;color:var(--gray-500);margin-top:2px}
-/* Headset modal */
 .hs-modal{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
 .hs-modal.show{display:flex;animation:up .25s ease}
 .hs-modal-box{background:#fff;border-radius:18px;width:100%;max-width:480px;max-height:82vh;overflow-y:auto;padding:28px 24px;box-shadow:0 24px 80px rgba(0,0,0,.35)}
@@ -96,7 +91,7 @@ input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,86,219,.1)}
 .hs-modal-sub{font-size:.82rem;color:#6b7280;margin-top:3px}
 .hs-list{display:flex;flex-direction:column;gap:8px;max-height:260px;overflow-y:auto;padding-right:2px}
 .hs-item{display:flex;align-items:center;gap:10px;padding:13px 16px;border-radius:10px;border:2px solid var(--gray-200);cursor:pointer;transition:all .15s;background:#fff;font-size:.88rem}
-.hs-item:hover{border-color:var(--blue);background:var(--blue-lt);transform:translateX(2px)}
+.hs-item:hover{border-color:var(--blue);background:var(--blue-lt)}
 .hs-item.sel{border-color:var(--blue);background:var(--blue-lt);box-shadow:0 0 0 3px rgba(26,86,219,.1)}
 .hs-item.usb-device{border-color:#bfdbfe;background:#f0f7ff}
 .hs-name{flex:1;font-weight:500}
@@ -108,11 +103,10 @@ input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,86,219,.1)}
 .cbtn-no{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}.cbtn-yes{background:var(--green-lt);color:var(--green);border:1px solid #a7f3d0}
 .no-usb-warn{display:none;margin-top:10px;padding:10px 14px;background:var(--red-lt);border-radius:8px;font-size:.83rem;color:var(--red);border:1px solid #fecaca}
 .btn-hs-ok{display:none;margin-top:16px}
-/* Mic overlay */
 .mic-overlay{position:fixed;inset:0;background:linear-gradient(135deg,#1a56db,#1e429f);z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;color:#fff;padding:32px;text-align:center}
 .mic-overlay.show{display:flex;animation:up .3s ease}
 .mic-overlay-icon{width:90px;height:90px;background:rgba(255,255,255,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:28px;animation:pulse 1.5s ease-in-out infinite}
-@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.08);opacity:.85}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 .mic-overlay-title{font-size:2.2rem;font-weight:800;margin-bottom:12px}
 .mic-overlay-sub{font-size:1.05rem;opacity:.88;margin-bottom:36px;max-width:300px;line-height:1.6}
 .mic-vu-bg{width:280px;height:16px;background:rgba(255,255,255,.25);border-radius:20px;overflow:hidden}
@@ -134,7 +128,7 @@ input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,86,219,.1)}
   <button class="btn btn-blue" onclick="start()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5,3 19,12 5,21"/></svg>Inizia Verifica</button>
   <div style="text-align:center;margin-top:20px">
     <span style="font-size:1.3rem;font-weight:800;color:#1a56db;letter-spacing:-.01em">8mila</span><span style="font-size:1.3rem;font-weight:400;color:#6b7280">.com</span>
-    <div style="font-size:.7rem;color:var(--gray-400);margin-top:2px">v2.1.0</div>
+    <div style="font-size:.7rem;color:var(--gray-400);margin-top:2px">v2.3.0</div>
   </div>
 </div>
 </div>
@@ -187,11 +181,16 @@ input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,86,219,.1)}
   <p class="sent">I risultati sono stati inviati automaticamente.</p>
   <div class="actions" id="actions" style="display:none">
     <p class="act-lbl">Prossimi passi</p>
-    <button class="crm-btn" onclick="window.open('https://8mila.ccrm.cloud/','_blank')">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-      <div><div>Apri CRM 8Mila</div><div class="crm-desc">Aggiungi ai preferiti con Ctrl+D dopo l'apertura</div></div>
-    </button>
-    <button class="btn btn-outline" onclick="dlShortcut()" style="gap:8px;margin-top:0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Scarica collegamento desktop CRM</button>
+    <div style="background:linear-gradient(135deg,#fffbeb,#fef3c7);border:2px solid #fcd34d;border-radius:12px;padding:18px 20px;margin-bottom:8px">
+      <div style="font-size:1rem;font-weight:800;color:#92400e;margin-bottom:8px">📌 Salva il link del CRM!</div>
+      <div style="font-size:.88rem;color:#92400e;line-height:1.6;margin-bottom:14px">Per accedere facilmente al CRM ogni volta, salvalo subito:<br><strong>1.</strong> Clicca "Apri CRM" qui sotto<br><strong>2.</strong> Premi <strong>Ctrl+D</strong> per aggiungerlo ai preferiti<br><strong>oppure</strong> scarica il collegamento per il desktop</div>
+      <button class="crm-btn" onclick="window.open('https://8mila.ccrm.cloud/','_blank')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <div><div>Apri CRM 8Mila</div><div class="crm-desc">Poi premi Ctrl+D per salvarlo nei preferiti</div></div>
+      </button>
+      <button class="btn btn-outline" onclick="dlShortcut();document.getElementById('desk-msg').style.display='block'" style="gap:8px;margin-top:8px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Scarica collegamento desktop</button>
+      <div id="desk-msg" style="display:none;margin-top:8px;font-size:.8rem;color:#065f46;background:#ecfdf5;border-radius:8px;padding:8px 12px">✅ File scaricato! Aprilo dalla cartella Download per salvarlo sul desktop.</div>
+    </div>
     <p class="act-lbl" style="margin-top:6px">Supporto tecnico remoto</p>
     <div class="sup-row">
       <a class="sup-btn" href="https://www.nanosystems.it/supremo/download" target="_blank"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span class="sup-name">Supremo</span><span class="sup-desc">Desktop remoto</span></a>
@@ -201,54 +200,49 @@ input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,86,219,.1)}
 </div>
 </div>
 
-</div><!-- .card -->
+</div>
 <p style="text-align:center;font-size:.75rem;color:#9ca3af;margin-top:10px;letter-spacing:.05em">made by ML</p>
 
-<!-- CONNECTION MODAL -->
 <div class="conn-modal" id="conn-modal">
   <div class="conn-modal-box">
     <div style="font-size:2rem;margin-bottom:12px">🌐</div>
-    <div class="conn-modal-title">Come sei connesso?</div>
-    <div class="conn-modal-sub">Non riesco a rilevarlo automaticamente.<br>Seleziona il tipo di connessione.</div>
+    <div style="font-size:1.1rem;font-weight:800;margin-bottom:8px">Come sei connesso?</div>
+    <div style="font-size:.88rem;color:var(--gray-500);line-height:1.5">Non riesco a rilevarlo automaticamente.<br>Seleziona il tipo di connessione.</div>
     <div class="conn-btns">
       <button class="conn-btn" onclick="confirmConn('LAN (cablata)',true)">
         <div class="conn-btn-icon">🔌</div>
         <div class="conn-btn-label">Cavo LAN</div>
-        <div class="conn-btn-desc">Connesso con cavo ethernet</div>
+        <div class="conn-btn-desc">Cavo ethernet</div>
       </button>
       <button class="conn-btn" onclick="confirmConn('Wi-Fi (wireless)',false)">
         <div class="conn-btn-icon">📶</div>
         <div class="conn-btn-label">Wi-Fi</div>
-        <div class="conn-btn-desc">Connesso senza fili</div>
+        <div class="conn-btn-desc">Senza fili</div>
       </button>
     </div>
   </div>
 </div>
 
-<!-- HEADSET MODAL -->
 <div class="hs-modal" id="hs-modal">
   <div class="hs-modal-box">
     <div class="hs-modal-hd">
       <div class="hs-modal-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a56db" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg></div>
-      <div><div class="hs-modal-title">Seleziona le tue cuffie</div><div class="hs-modal-sub">Clicca il dispositivo audio che stai usando ora</div></div>
+      <div><div class="hs-modal-title">Seleziona le tue cuffie</div><div class="hs-modal-sub">Clicca il dispositivo audio che stai usando</div></div>
     </div>
     <div class="hs-list" id="hs-list"></div>
     <div class="confirm-box" id="cb-usb">
-      <p>⚠️ Il dispositivo è collegato tramite USB (non jack 3.5mm)?</p>
+      <p>Il dispositivo è collegato tramite USB (non jack 3.5mm)?</p>
       <div style="display:flex;gap:8px"><button class="cbtn cbtn-no" onclick="cUsb(false)">✗ No, jack 3.5mm</button><button class="cbtn cbtn-yes" onclick="cUsb(true)">✓ Sì, è USB</button></div>
     </div>
-    <div class="no-usb-warn" id="no-usb-warn">⚠ Nessuna cuffia USB rilevata. Solo cuffie USB sono accettate per lavorare.</div>
+    <div class="no-usb-warn" id="no-usb-warn">⚠ Solo cuffie USB sono accettate per lavorare.</div>
     <button class="btn btn-blue btn-hs-ok" id="btn-hs-ok" onclick="confirmHS()">Conferma selezione →</button>
   </div>
 </div>
 
-<!-- MIC OVERLAY -->
 <div class="mic-overlay" id="mic-overlay">
-  <div class="mic-overlay-icon">
-    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-  </div>
+  <div class="mic-overlay-icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
   <div class="mic-overlay-title">🎤 Parla ora!</div>
-  <div class="mic-overlay-sub">Pronuncia qualcosa ad alta voce per verificare che il microfono funzioni correttamente</div>
+  <div class="mic-overlay-sub">Pronuncia qualcosa ad alta voce per verificare che il microfono funzioni</div>
   <div class="mic-vu-bg"><div class="mic-vu-fill" id="mic-vu-fill"></div></div>
   <div class="mic-vu-lbl" id="mic-vu-lbl">In ascolto...</div>
 </div>
@@ -275,15 +269,18 @@ function renderCk(target){
 
 let gAnim=null;
 function animGauge(target,unit,phase,dur=800){
-  document.getElementById('g-unit').textContent=unit;document.getElementById('g-phase').textContent=phase;
+  document.getElementById('g-unit').textContent=unit;
+  document.getElementById('g-phase').textContent=phase;
   const arc=document.getElementById('g-arc'),num=document.getElementById('g-num');
   const maxDash=298,maxVal=unit==='ms'?300:200,from=parseFloat(num.textContent)||0,t0=performance.now();
   if(gAnim)cancelAnimationFrame(gAnim);
-  function tick(){const p=Math.min((performance.now()-t0)/dur,1),e=1-Math.pow(1-p,3),v=from+(target-from)*e;
+  function tick(){
+    const p=Math.min((performance.now()-t0)/dur,1),e=1-Math.pow(1-p,3),v=from+(target-from)*e;
     num.textContent=unit==='ms'?Math.round(v).toString():v.toFixed(1);
     arc.style.strokeDashoffset=(maxDash*(1-Math.min(v/maxVal,1))).toFixed(1);
     arc.style.stroke=unit==='ms'?(v<50?'#10b981':v<100?'#f59e0b':'#ef4444'):(v<5?'#ef4444':v<15?'#f59e0b':'#1a56db');
-    if(p<1)gAnim=requestAnimationFrame(tick);}
+    if(p<1)gAnim=requestAnimationFrame(tick);
+  }
   gAnim=requestAnimationFrame(tick);
 }
 function scActive(id){['sc-dl','sc-ul','sc-pi','sc-ji'].forEach(s=>document.getElementById(s).classList.remove('active'));if(id)document.getElementById(id).classList.add('active');}
@@ -291,9 +288,14 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 
 async function ckOS(){
   const ua=navigator.userAgent;let os='Sconosciuto',ok=false;
-  if(ua.includes('Windows NT 10.0')){let v='Windows 10/11';try{if(navigator.userAgentData){const h=await navigator.userAgentData.getHighEntropyValues(['platformVersion']);v=parseInt(h.platformVersion)>=13?'Windows 11':'Windows 10';}}catch(e){}os=v;ok=true;}
-  else if(ua.includes('Windows NT 6.3')){os='Windows 8.1';}else if(ua.includes('Windows NT 6.1')){os='Windows 7';}
-  else if(ua.includes('Mac OS X')){os='macOS';ok=true;}else if(ua.includes('Linux')){os='Linux';ok=true;}
+  if(ua.includes('Windows NT 10.0')){
+    let v='Windows 10/11';
+    try{if(navigator.userAgentData){const h=await navigator.userAgentData.getHighEntropyValues(['platformVersion']);v=parseInt(h.platformVersion)>=13?'Windows 11':'Windows 10';}}catch(e){}
+    os=v;ok=true;
+  } else if(ua.includes('Windows NT 6.3')){os='Windows 8.1';}
+  else if(ua.includes('Windows NT 6.1')){os='Windows 7';}
+  else if(ua.includes('Mac OS X')){os='macOS';ok=true;}
+  else if(ua.includes('Linux')){os='Linux';ok=true;}
   const ram=navigator.deviceMemory||'?',cpu=navigator.hardwareConcurrency||'?';
   return{ok,detail:`${os} • ${ram}GB RAM • ${cpu} core`,os,ram,cpu};
 }
@@ -303,54 +305,58 @@ function confirmConn(type,isWired){
   document.getElementById('conn-modal').classList.remove('show');
   if(connResolve){connResolve({type,isWired,detail:type,manual:true});connResolve=null;}
 }
+
 async function ckConn(){
   return new Promise(resolve=>{
-    let type='Wi-Fi / LAN',isWired=false;
+    let resolved=false;
+    function done(result){
+      if(resolved)return;
+      resolved=true;
+      try{pc.close();}catch(e){}
+      resolve(result);
+    }
+    const pc=new RTCPeerConnection({iceServers:[]});
     try{
-      const pc=new RTCPeerConnection({iceServers:[]});
-      pc.createDataChannel('');pc.createOffer().then(o=>pc.setLocalDescription(o));
-      const candidates=[];let resolved=false;
+      pc.createDataChannel('');
+      pc.createOffer().then(o=>pc.setLocalDescription(o)).catch(()=>{});
+      const candidates=[];
       pc.onicecandidate=e=>{
-        if(e.candidate){candidates.push(e.candidate.candidate);}
-        else{
-          if(resolved)return;
+        if(resolved)return;
+        if(e.candidate){
+          candidates.push(e.candidate.candidate);
+        } else {
           const all=candidates.join('\n');
-          // Metodo 1: network-cost (Chrome: 0=cablata, 10=WiFi)
           const costMatch=all.match(/network-cost (\d+)/i);
           if(costMatch){
             const cost=parseInt(costMatch[1]);
-            if(cost===0){resolved=true;pc.close();resolve({type:'LAN (cablata)',isWired:true,detail:'LAN (cablata)'});return;}
-            if(cost>=10){resolved=true;pc.close();resolve({type:'Wi-Fi (wireless)',isWired:false,detail:'Wi-Fi (wireless)'});return;}
+            if(cost===0){done({type:'LAN (cablata)',isWired:true,detail:'LAN (cablata)'});return;}
+            if(cost>=10){done({type:'Wi-Fi (wireless)',isWired:false,detail:'Wi-Fi (wireless)'});return;}
           }
-          // Metodo 2: nome interfaccia
           const allLow=all.toLowerCase();
-          if(allLow.match(/\beth\d|\benp|\beno/) || all.includes(' en0 ')){
-            resolved=true;pc.close();resolve({type:'LAN (cablata)',isWired:true,detail:'LAN (cablata)'});return;
+          if(/\beth\d|\benp\d|\beno\d/.test(allLow)||all.includes(' en0 ')){
+            done({type:'LAN (cablata)',isWired:true,detail:'LAN (cablata)'});return;
           }
           if(allLow.includes('wlan')||allLow.includes('wifi')||allLow.includes('wireless')){
-            resolved=true;pc.close();resolve({type:'Wi-Fi (wireless)',isWired:false,detail:'Wi-Fi (wireless)'});return;
+            done({type:'Wi-Fi (wireless)',isWired:false,detail:'Wi-Fi (wireless)'});return;
           }
-          // Metodo 3: navigator.connection
           const cn=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
-          if(cn&&cn.type==='ethernet'){resolved=true;pc.close();resolve({type:'LAN (cablata)',isWired:true,detail:'LAN (cablata)'});return;}
-          if(cn&&cn.type==='wifi'){resolved=true;pc.close();resolve({type:'Wi-Fi (wireless)',isWired:false,detail:'Wi-Fi (wireless)'});return;}
-          // Non rilevato — chiedi all'utente
-          resolved=true;pc.close();
-          connResolve=resolve;
+          if(cn&&cn.type==='ethernet'){done({type:'LAN (cablata)',isWired:true,detail:'LAN (cablata)'});return;}
+          if(cn&&cn.type==='wifi'){done({type:'Wi-Fi (wireless)',isWired:false,detail:'Wi-Fi (wireless)'});return;}
+          connResolve=resolve;resolved=true;
           document.getElementById('conn-modal').classList.add('show');
         }
       };
       setTimeout(()=>{
-        if(!resolved){
-          resolved=true;try{pc.close();}catch(e2){}
-          const cn=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
-          if(cn&&cn.type==='ethernet'){resolve({type:'LAN (cablata)',isWired:true,detail:'LAN (cablata)'});return;}
-          if(cn&&cn.type==='wifi'){resolve({type:'Wi-Fi (wireless)',isWired:false,detail:'Wi-Fi (wireless)'});return;}
-          connResolve=resolve;
-          document.getElementById('conn-modal').classList.add('show');
-        }
+        if(resolved)return;
+        const cn=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
+        if(cn&&cn.type==='ethernet'){done({type:'LAN (cablata)',isWired:true,detail:'LAN (cablata)'});return;}
+        if(cn&&cn.type==='wifi'){done({type:'Wi-Fi (wireless)',isWired:false,detail:'Wi-Fi (wireless)'});return;}
+        resolved=true;
+        connResolve=resolve;
+        document.getElementById('conn-modal').classList.add('show');
       },3000);
     }catch(e){
+      resolved=true;
       connResolve=resolve;
       document.getElementById('conn-modal').classList.add('show');
     }
@@ -359,39 +365,54 @@ async function ckConn(){
 
 async function runPing(){
   const ps=[];
-  for(let i=0;i<5;i++){const t=performance.now();try{await fetch('https://speed.cloudflare.com/__down?bytes=1',{cache:'no-store',signal:AbortSignal.timeout(4000)});}catch(e){}ps.push(performance.now()-t);await sleep(100);}
+  for(let i=0;i<5;i++){
+    const t=performance.now();
+    try{await fetch('https://speed.cloudflare.com/__down?bytes=1',{cache:'no-store',signal:AbortSignal.timeout(4000)});}catch(e){}
+    ps.push(performance.now()-t);
+    await sleep(100);
+  }
   const avg=ps.reduce((a,b)=>a+b)/ps.length;
   return{ping:Math.round(avg),jitter:Math.round(Math.sqrt(ps.map(p=>Math.pow(p-avg,2)).reduce((a,b)=>a+b)/ps.length))};
 }
+
 async function runDL(cb){
   let last=0;
-  for(const mb of[3,7,20]){const b=mb*1024*1024,t=performance.now();try{const r=await fetch(`https://speed.cloudflare.com/__down?bytes=${b}`,{cache:'no-store',signal:AbortSignal.timeout(15000)});await r.blob();}catch(e){break;}last=(b*8)/((performance.now()-t)/1000)/1e6;cb(last);await sleep(80);}
+  for(const mb of[3,7,20]){
+    const b=mb*1024*1024,t=performance.now();
+    try{const r=await fetch(`https://speed.cloudflare.com/__down?bytes=${b}`,{cache:'no-store',signal:AbortSignal.timeout(15000)});await r.blob();}catch(e){break;}
+    last=(b*8)/((performance.now()-t)/1000)/1e6;
+    cb(last);await sleep(80);
+  }
   return Math.round(last*100)/100;
-  
+}
+
 async function runUL(cb){
-  const b=65536;
-  const d=new Uint8Array(b);
-  crypto.getRandomValues(d);
-  const repeated=[];
-  for(let i=0;i<64;i++) repeated.push(d);
-  const blob=new Blob(repeated);
+  // Genera 64KB di dati casuali (limite crypto.getRandomValues)
+  const chunk=new Uint8Array(65536);
+  crypto.getRandomValues(chunk);
+  // Ripeti 64 volte per arrivare a ~4MB
+  const parts=[];
+  for(let i=0;i<64;i++)parts.push(chunk);
+  const body=new Blob(parts);
   const t=performance.now();
   try{
     await Promise.race([
-      fetch('https://speed.cloudflare.com/__up',{method:'POST',body:blob,cache:'no-store'}),
-      new Promise((_,rej)=>setTimeout(()=>rej('timeout'),8000))
+      fetch('https://speed.cloudflare.com/__up',{method:'POST',body,cache:'no-store'}),
+      new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),9000))
     ]);
   }catch(e){}
   const secs=(performance.now()-t)/1000;
-  const mbps=secs>0.3?(blob.size*8)/secs/1e6:0;
-  const result=Math.round(mbps*100)/100;
+  const mbps=secs>0.5?(body.size*8)/secs/1e6:0;
   cb(Math.round(mbps*10)/10);
-  return result;
+  return Math.round(mbps*100)/100;
 }
 
 async function getPerms(){
   try{const s=await navigator.mediaDevices.getUserMedia({audio:true,video:true});return{audio:true,video:true,stream:s};}
-  catch(e){try{const s=await navigator.mediaDevices.getUserMedia({audio:true});return{audio:true,video:false,stream:s};}catch(e2){return{audio:false,video:false,stream:null};}}
+  catch(e){
+    try{const s=await navigator.mediaDevices.getUserMedia({audio:true});return{audio:true,video:false,stream:s};}
+    catch(e2){return{audio:false,video:false,stream:null};}
+  }
 }
 async function enumAudio(){const all=await navigator.mediaDevices.enumerateDevices();return all.filter(d=>d.kind==='audioinput'&&d.deviceId);}
 function isUSB(lbl){const l=(lbl||'').toLowerCase();return l.includes('usb')||l.includes('jabra')||l.includes('logitech')||l.includes('plantronics')||l.includes('sennheiser')||l.includes('poly')||l.includes('evolve')||l.includes('biz ')||l.includes('headset')||l.includes('cuffia')||l.includes('voyager')||l.includes('engage')||l.includes('speak');}
@@ -413,17 +434,10 @@ async function pickHeadset(){
       const usb=isUSB(d.label),virt=isVirtual(d.label);
       const badge=usb?`<span class="badge b-usb">✓ USB</span>`:virt?`<span class="badge b-virt">Virtuale</span>`:'';
       const ec=usb?'usb-device':'';
-      html+=`<div class="hs-item ${ec}" data-id="${d.deviceId}" data-lbl="${esc(d.label)}" data-usb="${usb?'yes':virt?'no':'unk'}" onclick="selHS(this)">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${usb?'#1a56db':'#9ca3af'}" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/></svg>
-        <span class="hs-name">${esc(d.label)||'Dispositivo audio'}</span>${badge}</div>`;
+      html+=`<div class="hs-item ${ec}" data-id="${d.deviceId}" data-lbl="${esc(d.label)}" data-usb="${usb?'yes':virt?'no':'unk'}" onclick="selHS(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${usb?'#1a56db':'#9ca3af'}" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/></svg><span class="hs-name">${esc(d.label)||'Dispositivo audio'}</span>${badge}</div>`;
     }
-    // Se non ci sono USB non mostrare l'opzione "non ho cuffie" come scelta neutra
-    if(usbDevs.length===0){
-      document.getElementById('no-usb-warn').style.display='block';
-    }
-    html+=`<div class="hs-item" data-id="none" data-lbl="" data-usb="no" onclick="selHS(this)">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      <span class="hs-name" style="color:var(--gray-400)">Non ho cuffie USB collegate</span></div>`;
+    if(usbDevs.length===0)document.getElementById('no-usb-warn').style.display='block';
+    html+=`<div class="hs-item" data-id="none" data-lbl="" data-usb="no" onclick="selHS(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span class="hs-name" style="color:var(--gray-400)">Non ho cuffie USB collegate</span></div>`;
     hsList.innerHTML=html;
     document.getElementById('hs-modal').classList.add('show');
     if(usbDevs.length===1){const el=hsList.querySelector('[data-usb="yes"]');if(el)selHS(el);}
@@ -443,8 +457,7 @@ function selHS(el){
 }
 
 function cUsb(isUsb){
-  S.usbOK=isUsb;
-  S.manualUsb=true; // selezione manuale
+  S.usbOK=isUsb;S.manualUsb=true;
   document.getElementById('cb-usb').style.display='none';
   const btn=document.getElementById('btn-hs-ok');
   btn.style.display='flex';
@@ -457,12 +470,11 @@ function confirmHS(){
   if(hsResolve){hsResolve({dev:S.selDev,usb:S.usbOK,manual:S.manualUsb});hsResolve=null;}
 }
 
-// VU meter — aggiornato per usare mic-overlay
 function startVU(stream){
-  const ctx=new AudioContext(),src=ctx.createMediaStreamSource(stream),an=ctx.createAnalyser();an.fftSize=256;src.connect(an);S.vuAnalyser={an,ctx};
+  const ctx=new AudioContext(),src=ctx.createMediaStreamSource(stream),an=ctx.createAnalyser();
+  an.fftSize=256;src.connect(an);S.vuAnalyser={an,ctx};
   const data=new Uint8Array(an.frequencyBinCount);
-  const fill=document.getElementById('mic-vu-fill');
-  const lbl=document.getElementById('mic-vu-lbl');
+  const fill=document.getElementById('mic-vu-fill'),lbl=document.getElementById('mic-vu-lbl');
   let peak=0;
   function tick(){
     an.getByteTimeDomainData(data);let rms=0;
@@ -476,14 +488,30 @@ function startVU(stream){
 }
 function stopVU(){if(S.vuAnim)cancelAnimationFrame(S.vuAnim);try{S.vuAnalyser?.ctx?.close();}catch(e){}}
 
-function playBeep(){const ctx=new AudioContext(),o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=880;g.gain.setValueAtTime(0.35,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.6);o.start();o.stop(ctx.currentTime+0.65);}
+function playBeep(){
+  const ctx=new AudioContext(),o=ctx.createOscillator(),g=ctx.createGain();
+  o.connect(g);g.connect(ctx.destination);
+  o.frequency.value=880;
+  g.gain.setValueAtTime(0.35,ctx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.6);
+  o.start();o.stop(ctx.currentTime+0.65);
+}
 
 let heardResolve=null;
 function heard(yes){S.heardOK=yes;if(heardResolve){heardResolve(yes);heardResolve=null;}}
 
-function dlShortcut(){const blob=new Blob([`[InternetShortcut]\nURL=${CRM}\nIconIndex=0\n`],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='CRM 8Mila.url';document.body.appendChild(a);a.click();document.body.removeChild(a);}
+function dlShortcut(){
+  const blob=new Blob([`[InternetShortcut]\nURL=${CRM}\nIconIndex=0\n`],{type:'text/plain'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='CRM 8Mila.url';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-async function save(payload){try{await fetch('/api/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});}catch(e){console.error(e);}}
+
+async function save(payload){
+  try{await fetch('/api/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});}
+  catch(e){console.error(e);}
+}
 
 async function start(){
   const name=document.getElementById('inp-name').value.trim(),email=document.getElementById('inp-email').value.trim();
@@ -492,28 +520,41 @@ async function start(){
   S.name=name;S.email=email;show('s-check');prog(5);
 
   addCk('os','Sistema Operativo e Hardware');updCk('os','running');
-  const osR=await ckOS();updCk('os',osR.ok?'ok':'fail',osR.detail);S.res.os=osR;prog(12);await sleep(250);
+  const osR=await ckOS();
+  updCk('os',osR.ok?'ok':'fail',osR.detail);S.res.os=osR;prog(12);await sleep(250);
 
   addCk('conn','Tipo di Connessione');updCk('conn','running');
-  const connR=await ckConn();updCk('conn','ok',connR.detail);S.res.conn=connR;prog(18);await sleep(200);
+  const connR=await ckConn();
+  updCk('conn','ok',connR.detail);S.res.conn=connR;prog(18);await sleep(200);
 
   addCk('speed','Connessione Internet');updCk('speed','running','Avvio speed test...');
   ph('Speed Test','Misurazione velocità in corso...');
   document.getElementById('gauge-area').classList.add('show');
-  document.getElementById('g-phase').textContent='PING';document.getElementById('g-unit').textContent='ms';scActive('sc-pi');
-  const{ping,jitter}=await runPing();animGauge(ping,'ms','PING',600);document.getElementById('v-pi').textContent=ping;document.getElementById('v-ji').textContent=jitter;scActive('sc-ji');await sleep(700);scActive(null);prog(32);
+
+  scActive('sc-pi');
+  document.getElementById('g-phase').textContent='PING';document.getElementById('g-unit').textContent='ms';
+  const{ping,jitter}=await runPing();
+  animGauge(ping,'ms','PING',600);
+  document.getElementById('v-pi').textContent=ping;document.getElementById('v-ji').textContent=jitter;
+  scActive('sc-ji');await sleep(700);scActive(null);prog(32);
+
   scActive('sc-dl');let dl=0;
   dl=await runDL(mbps=>{animGauge(mbps,'Mbps','DOWNLOAD',350);document.getElementById('v-dl').textContent=mbps.toFixed(1);});
-  scActive(null);prog(56);await sleep(350);
+  scActive(null);prog(52);await sleep(300);
+
   scActive('sc-ul');let ul=0;
   ul=await runUL(mbps=>{animGauge(mbps,'Mbps','UPLOAD',350);document.getElementById('v-ul').textContent=mbps.toFixed(1);});
-  scActive(null);await sleep(350);
+  scActive(null);await sleep(300);
+
   document.getElementById('gauge-area').classList.remove('show');
   const speedOk=dl>=10&&ul>=2&&ping<=100;
   updCk('speed',speedOk?'ok':(dl<3||ul<1)?'fail':'warn',`${dl.toFixed(1)} Mbps ↓  ${ul.toFixed(1)} Mbps ↑  ${ping}ms ping  ${jitter}ms jitter`);
-  S.res.speed={ok:speedOk,dl,ul,ping,jitter};prog(60);ph('Verifica di Sistema','Attendere il completamento di tutti i test.');
+  S.res.speed={ok:speedOk,dl,ul,ping,jitter};prog(60);
+  ph('Verifica di Sistema','Attendere il completamento di tutti i test.');
 
-  addCk('cam','Webcam');updCk('cam','running');addCk('hs','Cuffie USB');updCk('hs','running');addCk('mic','Microfono');updCk('mic','running');
+  addCk('cam','Webcam');updCk('cam','running');
+  addCk('hs','Cuffie USB');updCk('hs','running');
+  addCk('mic','Microfono');updCk('mic','running');
   const perm=await getPerms();
 
   let camOk=false,camDetail='Nessuna webcam';
@@ -529,28 +570,29 @@ async function start(){
     const hsR=await pickHeadset();
     const usbOk=hsR.usb===true;
     const devName=hsR.dev?.id==='none'?'Nessuna':hsR.dev?.label||'Sconosciuta';
-    const manualLabel=hsR.manual?' (confermato manualmente)':'';
+    const manualLabel=hsR.manual?' (manuale)':'';
     updCk('hs',usbOk?'ok':'fail',usbOk?devName+manualLabel:`Non USB: ${devName}`);
-    S.res.hs={ok:usbOk,detail:devName,usb:hsR.usb,manual:hsR.manual||false};
-    prog(78);
+    S.res.hs={ok:usbOk,detail:devName,usb:hsR.usb,manual:hsR.manual||false};prog(78);
 
-    // Test microfono con overlay a schermo intero
-    ph('Test Microfono','Verifica del segnale in corso...');
+    ph('Test Microfono','Verifica segnale in corso...');
     document.getElementById('mic-overlay').classList.add('show');
     const detectAudio=startVU(perm.stream);
     await sleep(4500);
     const hasAudio=detectAudio();
     stopVU();
     document.getElementById('mic-overlay').classList.remove('show');
-    updCk('mic',hasAudio?'ok':'fail',hasAudio?'Segnale rilevato':'Nessun segnale — controlla il microfono');
+    updCk('mic',hasAudio?'ok':'fail',hasAudio?'Segnale rilevato':'Nessun segnale');
     S.res.mic={ok:hasAudio};
   }
   prog(88);if(perm.stream)perm.stream.getVideoTracks().forEach(t=>t.stop());
 
-  addCk('audio','Test Audio');updCk('audio','running');show('s-audio');playBeep();
+  addCk('audio','Test Audio');updCk('audio','running');
+  show('s-audio');playBeep();
   const audioOk=await new Promise(r=>{heardResolve=r;});
-  updCk('audio',audioOk?'ok':'fail',audioOk?'Suono sentito':'Suono non sentito');S.res.audio={ok:audioOk};
-  if(perm.stream)perm.stream.getAudioTracks().forEach(t=>t.stop());prog(96);
+  updCk('audio',audioOk?'ok':'fail',audioOk?'Suono sentito':'Suono non sentito');
+  S.res.audio={ok:audioOk};
+  if(perm.stream)perm.stream.getAudioTracks().forEach(t=>t.stop());
+  prog(96);
 
   const idoneo=osR.ok&&speedOk&&S.res.hs.ok&&S.res.mic.ok&&audioOk;
   S.res.idoneo=idoneo;prog(100);
@@ -559,13 +601,23 @@ async function start(){
 }
 
 function showResult(idoneo){
-  show('s-result');const rb=document.getElementById('rb');rb.className='res-badge '+(idoneo?'ok':'fail');
+  show('s-result');
+  const rb=document.getElementById('rb');rb.className='res-badge '+(idoneo?'ok':'fail');
   document.getElementById('ri').style.background=idoneo?'#10b981':'#f87171';
   document.getElementById('ri-svg').innerHTML=idoneo?'<polyline points="20,6 9,17 4,12"/>':'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>';
   document.getElementById('rt').textContent=idoneo?'IDONEO':'NON IDONEO';
-  if(!idoneo){const f=[];if(!S.res.os?.ok)f.push('sistema operativo');if(!S.res.speed?.ok)f.push('connessione');if(!S.res.hs?.ok)f.push('cuffie USB');if(!S.res.mic?.ok)f.push('microfono');if(!S.res.audio?.ok)f.push('audio');if(!S.res.cam?.ok)f.push('webcam');document.getElementById('rn').textContent='Problemi: '+f.join(', ')+'.';}
+  if(!idoneo){
+    const f=[];
+    if(!S.res.os?.ok)f.push('sistema operativo');
+    if(!S.res.speed?.ok)f.push('connessione');
+    if(!S.res.hs?.ok)f.push('cuffie USB');
+    if(!S.res.mic?.ok)f.push('microfono');
+    if(!S.res.audio?.ok)f.push('audio');
+    if(!S.res.cam?.ok)f.push('webcam');
+    document.getElementById('rn').textContent='Problemi: '+f.join(', ')+'.';
+  }
   document.getElementById('res-cl').innerHTML=document.getElementById('cl').innerHTML;
-  if(idoneo){document.getElementById('actions').style.display='flex';}
+  if(idoneo)document.getElementById('actions').style.display='flex';
 }
 </script>
 </body>
