@@ -367,15 +367,12 @@ async function ckConn(){
 }
 
 async function runPing(){
-  const targets=[
-    'https://8mila.ccrm.cloud/favicon.ico',
-    'https://speed.cloudflare.com/__down?bytes=1'
-  ];
+  const target='https://8mila.ccrm.cloud/favicon.ico';
   const ps=[];
   for(let i=0;i<5;i++){
     const t=performance.now();
     try{
-      await fetch(targets[i%2],{cache:'no-store',signal:AbortSignal.timeout(4000),mode:'no-cors'});
+      await fetch(target,{cache:'no-store',signal:AbortSignal.timeout(4000),mode:'no-cors'});
     }catch(e){}
     ps.push(performance.now()-t);
     await sleep(100);
