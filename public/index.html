@@ -42,6 +42,7 @@ input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,86,219,.1)}
 .gauge-num{font:700 2.6rem var(--m);text-align:center;margin-top:-6px;color:var(--gray-900)}
 .gauge-lbl{font-size:.78rem;color:var(--gray-400);text-align:center}
 .gauge-phase{font-size:.72rem;font-weight:700;color:var(--blue);letter-spacing:.1em;text-transform:uppercase;margin-top:4px;text-align:center}
+.gauge-server{font-size:.70rem;color:var(--gray-400);text-align:center;margin-top:3px;min-height:14px;font-family:var(--m)}
 .speed-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px}
 .sc{background:var(--gray-50);border-radius:8px;padding:9px 6px;text-align:center;border:1.5px solid transparent;transition:all .2s}.sc.active{background:var(--blue-lt);border-color:#bfdbfe}
 .sc-lbl{font-size:.66rem;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:.07em}
@@ -128,7 +129,7 @@ input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,86,219,.1)}
   <button class="btn btn-blue" onclick="start()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5,3 19,12 5,21"/></svg>Inizia Verifica</button>
   <div style="text-align:center;margin-top:20px">
     <span style="font-size:1.3rem;font-weight:800;color:#1a56db;letter-spacing:-.01em">8mila</span><span style="font-size:1.3rem;font-weight:400;color:#6b7280">.com</span>
-    <div style="font-size:.7rem;color:var(--gray-400);margin-top:2px">v2.3.0</div>
+    <div style="font-size:.7rem;color:var(--gray-400);margin-top:2px">v2.4.0</div>
   </div>
 </div>
 </div>
@@ -145,7 +146,8 @@ input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,86,219,.1)}
     <div class="gauge-num" id="g-num">0</div>
     <div class="gauge-lbl" id="g-unit">Mbps</div>
     <div class="gauge-phase" id="g-phase">DOWNLOAD</div>
-    <div style="height:12px"></div>
+    <div class="gauge-server" id="g-server"></div>
+    <div style="height:6px"></div>
     <div class="speed-row">
       <div class="sc" id="sc-dl"><div class="sc-lbl">Download</div><div class="sc-val" id="v-dl">—</div><div class="sc-unit">Mbps</div></div>
       <div class="sc" id="sc-ul"><div class="sc-lbl">Upload</div><div class="sc-val" id="v-ul">—</div><div class="sc-unit">Mbps</div></div>
@@ -254,6 +256,7 @@ const S={name:'',email:'',res:{},selDev:null,usbOK:null,manualUsb:false,heardOK:
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 function prog(p){document.getElementById('prog').style.width=p+'%';}
 function ph(t,s){document.getElementById('ph-title').textContent=t;document.getElementById('ph-sub').textContent=s;}
+function setServer(txt){document.getElementById('g-server').textContent=txt;}
 
 const CK={};
 function addCk(k,n){CK[k]={n,st:'pending',d:''};renderCk('cl');}
@@ -398,20 +401,30 @@ async function runDL(cb){
 async function runUL(cb){
   const chunk=new Uint8Array(65536);
   crypto.getRandomValues(chunk);
-  const parts=[];
-  for(let i=0;i<64;i++)parts.push(chunk);
-  const body=new Blob(parts);
-  const t=performance.now();
-  try{
-    await Promise.race([
-      fetch('/api/speedtest',{method:'POST',body,cache:'no-store'}),
-      new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),9000))
-    ]);
-  }catch(e){}
-  const secs=(performance.now()-t)/1000;
-  const mbps=secs>0.5?(body.size*8)/secs/1e6:0;
-  cb(Math.round(mbps*10)/10);
-  return Math.round(mbps*100)/100;
+  let last=0;
+  for(const mb of[1,3,8]){
+    const count=Math.ceil((mb*1024*1024)/65536);
+    const parts=[];
+    for(let i=0;i<count;i++)parts.push(chunk);
+    const body=new Blob(parts);
+    const t=performance.now();
+    try{
+      await fetch('https://speed.cloudflare.com/__up',{
+        method:'POST',
+        body,
+        cache:'no-store',
+        mode:'no-cors',
+        signal:AbortSignal.timeout(12000)
+      });
+    }catch(e){break;}
+    const secs=(performance.now()-t)/1000;
+    if(secs>0.3){
+      last=(body.size*8)/secs/1e6;
+      cb(Math.round(last*10)/10);
+    }
+    await sleep(80);
+  }
+  return Math.round(last*100)/100;
 }
 
 async function getPerms(){
@@ -538,20 +551,36 @@ async function start(){
   ph('Speed Test','Misurazione velocità in corso...');
   document.getElementById('gauge-area').classList.add('show');
 
+  // — PING con server label visibile —
   scActive('sc-pi');
-  document.getElementById('g-phase').textContent='PING';document.getElementById('g-unit').textContent='ms';
+  document.getElementById('g-phase').textContent='PING';
+  document.getElementById('g-unit').textContent='ms';
+  setServer('→ 8mila.ccrm.cloud');
   const{ping,jitter}=await runPing();
   animGauge(ping,'ms','PING',600);
-  document.getElementById('v-pi').textContent=ping;document.getElementById('v-ji').textContent=jitter;
-  scActive('sc-ji');await sleep(700);scActive(null);prog(32);
+  document.getElementById('v-pi').textContent=ping;
+  document.getElementById('v-ji').textContent=jitter;
+  scActive('sc-ji');await sleep(700);scActive(null);
+  setServer('');
+  prog(32);
 
-  scActive('sc-dl');let dl=0;
+  // — DOWNLOAD —
+  scActive('sc-dl');
+  setServer('→ speed.cloudflare.com');
+  let dl=0;
   dl=await runDL(mbps=>{animGauge(mbps,'Mbps','DOWNLOAD',350);document.getElementById('v-dl').textContent=mbps.toFixed(1);});
-  scActive(null);prog(52);await sleep(300);
+  scActive(null);
+  setServer('');
+  prog(52);await sleep(300);
 
-  scActive('sc-ul');let ul=0;
+  // — UPLOAD —
+  scActive('sc-ul');
+  setServer('→ speed.cloudflare.com');
+  let ul=0;
   ul=await runUL(mbps=>{animGauge(mbps,'Mbps','UPLOAD',350);document.getElementById('v-ul').textContent=mbps.toFixed(1);});
-  scActive(null);await sleep(300);
+  scActive(null);
+  setServer('');
+  await sleep(300);
 
   document.getElementById('gauge-area').classList.remove('show');
   const speedOk=dl>=10&&ping<=100;
