@@ -364,15 +364,24 @@ async function ckConn(){
 }
 
 async function runPing(){
+  const targets=[
+    'https://8mila.ccrm.cloud/favicon.ico',
+    'https://speed.cloudflare.com/__down?bytes=1'
+  ];
   const ps=[];
   for(let i=0;i<5;i++){
     const t=performance.now();
-    try{await fetch('https://speed.cloudflare.com/__down?bytes=1',{cache:'no-store',signal:AbortSignal.timeout(4000)});}catch(e){}
+    try{
+      await fetch(targets[i%2],{cache:'no-store',signal:AbortSignal.timeout(4000),mode:'no-cors'});
+    }catch(e){}
     ps.push(performance.now()-t);
     await sleep(100);
   }
   const avg=ps.reduce((a,b)=>a+b)/ps.length;
-  return{ping:Math.round(avg),jitter:Math.round(Math.sqrt(ps.map(p=>Math.pow(p-avg,2)).reduce((a,b)=>a+b)/ps.length))};
+  return{
+    ping:Math.round(avg),
+    jitter:Math.round(Math.sqrt(ps.map(p=>Math.pow(p-avg,2)).reduce((a,b)=>a+b)/ps.length))
+  };
 }
 
 async function runDL(cb){
