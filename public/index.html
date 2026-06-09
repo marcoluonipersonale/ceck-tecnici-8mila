@@ -540,6 +540,12 @@ async function start(){
   const osR=await ckOS();
   updCk('os',osR.ok?'ok':'fail',osR.detail);S.res.os=osR;prog(12);await sleep(250);
 
+addCk('ram','Memoria RAM');
+const ramGb=parseInt(navigator.deviceMemory)||0;
+const ramOk=ramGb>=8;
+updCk('ram',ramOk?'ok':'fail',`${ramGb} GB installati (minimo 8 GB richiesti)`);
+S.res.ram={ok:ramOk,gb:ramGb};prog(15);await sleep(200);
+
   addCk('conn','Tipo di Connessione');updCk('conn','running');
   const connR=await ckConn();
   updCk('conn','ok',connR.detail);S.res.conn=connR;prog(18);await sleep(200);
