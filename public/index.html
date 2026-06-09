@@ -633,7 +633,7 @@ S.res.ram={ok:ramOk,gb:ramGb};prog(15);await sleep(200);
   if(perm.stream)perm.stream.getAudioTracks().forEach(t=>t.stop());
   prog(96);
 
-  const idoneo=osR.ok&&speedOk&&S.res.hs.ok&&S.res.mic.ok&&audioOk;
+ const idoneo=osR.ok&&ramOk&&speedOk&&S.res.hs.ok&&S.res.mic.ok&&audioOk;
   S.res.idoneo=idoneo;prog(100);
   await save({name:S.name,email:S.email,idoneo,results:{os:S.res.os,conn:S.res.conn,speed:S.res.speed,cam:S.res.cam,hs:S.res.hs,mic:S.res.mic,audio:S.res.audio}});
   showResult(idoneo);
@@ -648,6 +648,7 @@ function showResult(idoneo){
   if(!idoneo){
     const f=[];
     if(!S.res.os?.ok)f.push('sistema operativo');
+if(!S.res.ram?.ok)f.push('RAM insufficiente');
     if(!S.res.speed?.ok)f.push('connessione');
     if(!S.res.hs?.ok)f.push('cuffie USB');
     if(!S.res.mic?.ok)f.push('microfono');
