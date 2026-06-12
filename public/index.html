@@ -542,7 +542,7 @@ async function start(){
 
 addCk('ram','Memoria RAM');
 const ramGb=parseInt(navigator.deviceMemory)||0;
-const ramOk=ramGb>=8;
+const ramOk=ramGb>=4;
 updCk('ram',ramOk?'ok':'fail',`${ramGb} GB installati (minimo 8 GB richiesti)`);
 S.res.ram={ok:ramOk,gb:ramGb};prog(15);await sleep(200);
 
