@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -129,7 +130,7 @@ input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,86,219,.1)}
   <button class="btn btn-blue" onclick="start()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5,3 19,12 5,21"/></svg>Inizia Verifica</button>
   <div style="text-align:center;margin-top:20px">
     <span style="font-size:1.3rem;font-weight:800;color:#1a56db;letter-spacing:-.01em">8mila</span><span style="font-size:1.3rem;font-weight:400;color:#6b7280">.com</span>
-    <div style="font-size:.7rem;color:var(--gray-400);margin-top:2px">v2.4.2</div>
+    <div style="font-size:.7rem;color:var(--gray-400);margin-top:2px">v2.5.0</div>
   </div>
 </div>
 </div>
@@ -205,6 +206,38 @@ input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,86,219,.1)}
 </div>
 <p style="text-align:center;font-size:.75rem;color:#9ca3af;margin-top:10px;letter-spacing:.05em">made by ML</p>
 
+<!-- Modal RAM (compare solo se il browser non rileva deviceMemory) -->
+<div class="conn-modal" id="ram-modal">
+  <div class="conn-modal-box">
+    <div style="font-size:2rem;margin-bottom:12px">💾</div>
+    <div style="font-size:1.1rem;font-weight:800;margin-bottom:8px">Quanta RAM ha il tuo PC?</div>
+    <div style="font-size:.88rem;color:var(--gray-500);line-height:1.5">Non riesco a rilevarlo automaticamente.<br>Seleziona la quantità di memoria installata.</div>
+    <div class="conn-btns">
+      <button class="conn-btn" onclick="confirmRam(4)">
+        <div class="conn-btn-icon">🔴</div>
+        <div class="conn-btn-label">4 GB</div>
+        <div class="conn-btn-desc">o meno</div>
+      </button>
+      <button class="conn-btn" onclick="confirmRam(8)">
+        <div class="conn-btn-icon">🟢</div>
+        <div class="conn-btn-label">8 GB</div>
+        <div class="conn-btn-desc"></div>
+      </button>
+      <button class="conn-btn" onclick="confirmRam(16)">
+        <div class="conn-btn-icon">🟢</div>
+        <div class="conn-btn-label">16 GB</div>
+        <div class="conn-btn-desc"></div>
+      </button>
+      <button class="conn-btn" onclick="confirmRam(32)">
+        <div class="conn-btn-icon">🟢</div>
+        <div class="conn-btn-label">32 GB</div>
+        <div class="conn-btn-desc">o più</div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal connessione -->
 <div class="conn-modal" id="conn-modal">
   <div class="conn-modal-box">
     <div style="font-size:2rem;margin-bottom:12px">🌐</div>
@@ -301,6 +334,13 @@ async function ckOS(){
   else if(ua.includes('Linux')){os='Linux';ok=true;}
   const ram=navigator.deviceMemory||'?',cpu=navigator.hardwareConcurrency||'?';
   return{ok,detail:`${os} • ${ram}GB RAM • ${cpu} core`,os,ram,cpu};
+}
+
+// — RAM modal —
+let ramResolve=null;
+function confirmRam(gb){
+  document.getElementById('ram-modal').classList.remove('show');
+  if(ramResolve){ramResolve(gb);ramResolve=null;}
 }
 
 let connResolve=null;
@@ -407,18 +447,12 @@ async function runUL(cb){
     const t=performance.now();
     try{
       await fetch('https://speed.cloudflare.com/__up',{
-        method:'POST',
-        body,
-        cache:'no-store',
-        mode:'no-cors',
+        method:'POST',body,cache:'no-store',mode:'no-cors',
         signal:AbortSignal.timeout(12000)
       });
     }catch(e){break;}
     const secs=(performance.now()-t)/1000;
-    if(secs>0.3){
-      last=(body.size*8)/secs/1e6;
-      cb(Math.round(last*10)/10);
-    }
+    if(secs>0.3){last=(body.size*8)/secs/1e6;cb(Math.round(last*10)/10);}
     await sleep(80);
   }
   return Math.round(last*100)/100;
@@ -536,25 +570,33 @@ async function start(){
   if(!email||!email.includes('@')){document.getElementById('inp-email').focus();return;}
   S.name=name;S.email=email;show('s-check');prog(5);
 
+  // — OS —
   addCk('os','Sistema Operativo e Hardware');updCk('os','running');
   const osR=await ckOS();
   updCk('os',osR.ok?'ok':'fail',osR.detail);S.res.os=osR;prog(12);await sleep(250);
 
-addCk('ram','Memoria RAM');
-const ramGb=parseInt(navigator.deviceMemory)||0;
-const ramOk=ramGb>=4;
-updCk('ram',ramOk?'ok':'fail',`${ramGb} GB installati (minimo 8 GB richiesti)`);
-S.res.ram={ok:ramOk,gb:ramGb};prog(15);await sleep(200);
+  // — RAM: auto se Chrome/Edge, manuale se Firefox/Safari —
+  addCk('ram','Memoria RAM');updCk('ram','running');
+  let ramGb=parseInt(navigator.deviceMemory)||0;
+  let ramManual=false;
+  if(ramGb===0){
+    ramGb=await new Promise(r=>{ramResolve=r;document.getElementById('ram-modal').classList.add('show');});
+    ramManual=true;
+  }
+  const ramOk=ramGb>=8;
+  updCk('ram',ramOk?'ok':'fail',`${ramGb} GB${ramManual?' (manuale)':''} • minimo 8 GB richiesti`);
+  S.res.ram={ok:ramOk,gb:ramGb,manual:ramManual};prog(15);await sleep(200);
 
+  // — Connessione —
   addCk('conn','Tipo di Connessione');updCk('conn','running');
   const connR=await ckConn();
   updCk('conn','ok',connR.detail);S.res.conn=connR;prog(18);await sleep(200);
 
+  // — Speed test —
   addCk('speed','Connessione Internet');updCk('speed','running','Avvio speed test...');
   ph('Speed Test','Misurazione velocità in corso...');
   document.getElementById('gauge-area').classList.add('show');
 
-  // — PING con server label visibile —
   scActive('sc-pi');
   document.getElementById('g-phase').textContent='PING';
   document.getElementById('g-unit').textContent='ms';
@@ -564,26 +606,19 @@ S.res.ram={ok:ramOk,gb:ramGb};prog(15);await sleep(200);
   document.getElementById('v-pi').textContent=ping;
   document.getElementById('v-ji').textContent=jitter;
   scActive('sc-ji');await sleep(700);scActive(null);
-  setServer('');
-  prog(32);
+  setServer('');prog(32);
 
-  // — DOWNLOAD —
   scActive('sc-dl');
   setServer('→ speed.cloudflare.com');
   let dl=0;
   dl=await runDL(mbps=>{animGauge(mbps,'Mbps','DOWNLOAD',350);document.getElementById('v-dl').textContent=mbps.toFixed(1);});
-  scActive(null);
-  setServer('');
-  prog(52);await sleep(300);
+  scActive(null);setServer('');prog(52);await sleep(300);
 
-  // — UPLOAD —
   scActive('sc-ul');
   setServer('→ speed.cloudflare.com');
   let ul=0;
   ul=await runUL(mbps=>{animGauge(mbps,'Mbps','UPLOAD',350);document.getElementById('v-ul').textContent=mbps.toFixed(1);});
-  scActive(null);
-  setServer('');
-  await sleep(300);
+  scActive(null);setServer('');await sleep(300);
 
   document.getElementById('gauge-area').classList.remove('show');
   const speedOk=dl>=10&&ping<=100;
@@ -591,6 +626,7 @@ S.res.ram={ok:ramOk,gb:ramGb};prog(15);await sleep(200);
   S.res.speed={ok:speedOk,dl,ul,ping,jitter};prog(60);
   ph('Verifica di Sistema','Attendere il completamento di tutti i test.');
 
+  // — Webcam / Cuffie / Mic —
   addCk('cam','Webcam');updCk('cam','running');
   addCk('hs','Cuffie USB');updCk('hs','running');
   addCk('mic','Microfono');updCk('mic','running');
@@ -625,6 +661,7 @@ S.res.ram={ok:ramOk,gb:ramGb};prog(15);await sleep(200);
   }
   prog(88);if(perm.stream)perm.stream.getVideoTracks().forEach(t=>t.stop());
 
+  // — Audio —
   addCk('audio','Test Audio');updCk('audio','running');
   show('s-audio');playBeep();
   const audioOk=await new Promise(r=>{heardResolve=r;});
@@ -633,9 +670,9 @@ S.res.ram={ok:ramOk,gb:ramGb};prog(15);await sleep(200);
   if(perm.stream)perm.stream.getAudioTracks().forEach(t=>t.stop());
   prog(96);
 
- const idoneo=osR.ok&&ramOk&&speedOk&&S.res.hs.ok&&S.res.mic.ok&&audioOk;
+  const idoneo=osR.ok&&ramOk&&speedOk&&S.res.hs.ok&&S.res.mic.ok&&audioOk;
   S.res.idoneo=idoneo;prog(100);
-  await save({name:S.name,email:S.email,idoneo,results:{os:S.res.os,conn:S.res.conn,speed:S.res.speed,cam:S.res.cam,hs:S.res.hs,mic:S.res.mic,audio:S.res.audio}});
+  await save({name:S.name,email:S.email,idoneo,results:{os:S.res.os,ram:S.res.ram,conn:S.res.conn,speed:S.res.speed,cam:S.res.cam,hs:S.res.hs,mic:S.res.mic,audio:S.res.audio}});
   showResult(idoneo);
 }
 
@@ -648,7 +685,7 @@ function showResult(idoneo){
   if(!idoneo){
     const f=[];
     if(!S.res.os?.ok)f.push('sistema operativo');
-if(!S.res.ram?.ok)f.push('RAM insufficiente');
+    if(!S.res.ram?.ok)f.push('RAM insufficiente');
     if(!S.res.speed?.ok)f.push('connessione');
     if(!S.res.hs?.ok)f.push('cuffie USB');
     if(!S.res.mic?.ok)f.push('microfono');
