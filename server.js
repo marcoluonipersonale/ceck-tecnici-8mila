@@ -77,22 +77,7 @@ app.get('/api/results', async (req, res) => {
 
 // ── POST salvataggio risultato ────────────────────────────────────────────────
 app.post('/api/submit', async (req, res) => {
-  try {
-    const entry = {
-      id:      Date.now().toString(36) + Math.random().toString(36).slice(2),
-      name:    req.body.name,
-      email:   req.body.email,
-      idoneo:  req.body.idoneo,
-      date:    new Date().toISOString(),
-      results: req.body.results
-    };
-    const result = await supabase('POST', '/rest/v1/candidates', entry);
-    console.log('Salvato:', entry.name, '—', new Date().toISOString());
-    res.json({ ok: true, id: entry.id });
-  } catch(e) {
-    console.error('POST error:', e.message);
-    res.status(500).json({ ok: false, error: e.message });
-  }
+  res.status(503).json({ ok: false, error: 'Manutenzione in corso' });
 });
 
 // ── DELETE record ─────────────────────────────────────────────────────────────
